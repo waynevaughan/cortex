@@ -1,32 +1,44 @@
 # Cortex
 
-A knowledge management system for AI agents. Persistent memory that survives across sessions, agents, and time.
+A brain for your AI agent.
 
-## Architecture
+Cortex gives [OpenClaw](https://openclaw.ai) agents persistent memory — knowledge that survives across sessions, agents, and time. Without it, every conversation starts from zero. With it, your agent actually learns.
 
-Cortex organizes agent memory into four layers:
+## How It Works
 
-| Layer | Name | Scope | Persistence | Analogy |
-|---|---|---|---|---|
-| Working memory | **Buffer** | Single agent, single session | Ephemeral | RAM |
-| Local storage | **Cache** | Single agent, across sessions | Persistent, private | Local hard drive |
-| Shared storage | **Vault** | All agents + users | Permanent, shared | Network drive |
-| Search | **Index** | Across Cache + Vault | N/A | Search engine |
+Cortex organizes memory into four layers, each solving a different problem:
 
-## Specification
+| Layer | What it does | Analogy |
+|---|---|---|
+| **Buffer** | Manages what's in the context window right now | RAM |
+| **Cache** | Stores session logs, notes, and working files | Local disk |
+| **Vault** | Holds permanent shared knowledge — decisions, specs, research | Network drive |
+| **Index** | Searches across everything | Search engine |
 
-The design spec lives in `spec/`:
+Your agent reads from all four layers. Knowledge flows upward: observations from sessions (Buffer) get saved to notes (Cache), and the best insights get promoted to permanent docs (Vault) where any agent can access them.
 
-- `spec/buffer.md` — Context window management, session lifecycle, thresholds
-- `spec/cache.md` — Local storage, file roles, maintenance, safety rules
-- `spec/vault.md` — Shared knowledge, conventions, promotion flow, access model
-- `spec/index.md` — Search, QMD, weighting, structural indexes
+## What's in This Repo
 
-## Vault
+**`spec/`** — The design specification for each layer. Start here if you want to understand the architecture.
 
-The `vault/` directory contains the working implementation — scripts, hooks, and conventions for managing a Cortex knowledge store.
+**`vault/`** — The working implementation. Scripts, git hooks, and conventions for managing a Cortex knowledge store. See [`vault/README.md`](vault/README.md) to get started.
 
-See [`vault/README.md`](vault/README.md) for setup and usage.
+## Quick Start
+
+```bash
+# Initialize a new vault
+git clone https://github.com/openclaw/cortex.git
+cd cortex/vault
+bash bin/init.sh .
+
+# Write your first knowledge doc, commit it
+# The pre-commit hook handles IDs, hashes, and validation
+git add my-doc.md && git commit -m "add: first doc"
+```
+
+## Status
+
+Cortex is under active development. The Vault layer is operational and in daily use. Buffer and Cache are managed through OpenClaw's built-in memory system. Index is partially implemented via [QMD](https://github.com/nicholasgasior/qmd) hybrid search.
 
 ## License
 
