@@ -1,0 +1,276 @@
+#!/usr/bin/env node
+
+/**
+ * Cortex Vault Pre-Commit Hook
+ * 
+ * - Computes SHA-256 hash of normalized document body
+ * - Generates UUIDv7 id if missing
+ * - Auto-fixes tag casing and whitespace
+ * - Validates tags (rejects on errors)
+ * - Re-stages modified files
+ */
+
+import { execSync } from 'child_process';
+import { readFileSync, writeFileSync } from 'fs';
+import { createHash } from 'crypto';
+import { generateUUIDv7 } from './uuidv7.mjs';
+
+// Valid tag namespaces and their allowed values
+const TAG_RULES = {
+  'type/': ['decision', 'spec', 'research', 'guide', 'convention', 'retrospective'],
+  'status/': ['draft', 'active', 'superseded'],
+  'topic/': null,    // open namespace
+  'project/': null   // open namespace
+};
+
+const REQUIRED_NAMESPACES = ['type/', 'status/'];
+
+function getStagedMarkdownFiles() {
+  try {
+    const output = execSync('git diff --cached --name-only --diff-filter=ACM', { encoding: 'utf-8' });
+    return output.split('\n').filter(f => f.endsWith('.md') && f.trim() !== '');
+  } catch (error) {
+    return [];
+  }
+}
+
+function parseFrontmatter(content) {
+  const lines = content.split('\n');
+  
+  // Check for frontmatter
+  if (lines[0] !== '---') {
+    return { frontmatter: null, body: content, fmEndLine: -1 };
+  }
+  
+  // Find closing ---
+  let fmEndLine = -1;
+  for (let i = 1; i < lines.length; i++) {
+    if (lines[i] === '---') {
+      fmEndLine = i;
+      break;
+    }
+  }
+  
+  if (fmEndLine === -1) {
+    return { frontmatter: null, body: content, fmEndLine: -1 };
+  }
+  
+  // Parse frontmatter (simple key: value and key: [array] parsing)
+  const fmLines = lines.slice(1, fmEndLine);
+  const frontmatter = {};
+  let currentKey = null;
+  
+  for (const line of fmLines) {
+    // Skip empty lines
+    if (line.trim() === '') continue;
+    
+    // Key: value
+    const match = line.match(/^(\w+):\s*(.*)$/);
+    if (match) {
+      currentKey = match[1];
+      let value = match[2].trim();
+      
+      // Handle array format [item1, item2]
+      if (value.startsWith('[') && value.endsWith(']')) {
+        value = value.slice(1, -1).split(',').map(s => s.trim()).filter(s => s !== '');
+      }
+      
+      // Strip surrounding quotes (only for string values)
+      if (typeof value === 'string' && ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'")))) {
+        value = value.slice(1, -1);
+      }
+      
+      frontmatter[currentKey] = value;
+    }
+  }
+  
+  // Body is everything after closing ---
+  const body = lines.slice(fmEndLine + 1).join('\n');
+  
+  return { frontmatter, body, fmEndLine, lines };
+}
+
+function normalizeBody(body) {
+  // Normalize line endings to LF
+  body = body.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+  
+  // Strip leading blank lines
+  body = body.replace(/^\s*\n+/, '');
+  
+  // Strip trailing blank lines and whitespace
+  body = body.replace(/\s+$/, '');
+  
+  return body;
+}
+
+function computeHash(body) {
+  const normalized = normalizeBody(body);
+  return createHash('sha256').update(normalized, 'utf-8').digest('hex');
+}
+
+function fixTags(tags) {
+  if (!tags) return tags;
+  if (typeof tags === 'string') tags = [tags];
+  if (!Array.isArray(tags)) return tags;
+  
+  // Lowercase and trim
+  return tags.map(tag => tag.toLowerCase().trim());
+}
+
+function validateTags(tags) {
+  if (!tags) return ['Missing tags field'];
+  if (typeof tags === 'string') tags = [tags];
+  if (!Array.isArray(tags)) return ['Tags must be an array'];
+  
+  const errors = [];
+  const foundNamespaces = new Set();
+  
+  for (const tag of tags) {
+    // Extract namespace
+    const parts = tag.split('/');
+    if (parts.length < 2) {
+      errors.push(`Tag "${tag}" missing namespace (must be namespace/value)`);
+      continue;
+    }
+    
+    const namespace = parts[0] + '/';
+    const value = parts.slice(1).join('/');
+    
+    // Check if namespace is valid
+    if (!(namespace in TAG_RULES)) {
+      errors.push(`Unknown namespace "${namespace}" (valid: ${Object.keys(TAG_RULES).join(', ')})`);
+      continue;
+    }
+    
+    foundNamespaces.add(namespace);
+    
+    // Check closed namespace values
+    if (TAG_RULES[namespace] !== null) {
+      if (!TAG_RULES[namespace].includes(value)) {
+        errors.push(`Invalid ${namespace} value "${value}" (valid: ${TAG_RULES[namespace].join(', ')})`);
+      }
+    }
+  }
+  
+  // Check required namespaces
+  for (const required of REQUIRED_NAMESPACES) {
+    if (!foundNamespaces.has(required)) {
+      errors.push(`Missing required ${required} tag`);
+    }
+  }
+  
+  return errors;
+}
+
+function serializeFrontmatter(frontmatter) {
+  const lines = ['---'];
+  
+  for (const [key, value] of Object.entries(frontmatter)) {
+    if (Array.isArray(value)) {
+      lines.push(`${key}: [${value.join(', ')}]`);
+    } else if (key === 'id' || key === 'hash') {
+      lines.push(`${key}: "${value}"`);
+    } else {
+      lines.push(`${key}: ${value}`);
+    }
+  }
+  
+  lines.push('---');
+  return lines.join('\n');
+}
+
+function processFile(filepath) {
+  const content = readFileSync(filepath, 'utf-8');
+  const { frontmatter, body, fmEndLine, lines } = parseFrontmatter(content);
+  
+  if (!frontmatter) {
+    // No frontmatter - skip
+    return { modified: false };
+  }
+  
+  let modified = false;
+  
+  // Fix tag casing FIRST (before validation)
+  if (frontmatter.tags) {
+    const originalTags = Array.isArray(frontmatter.tags) 
+      ? frontmatter.tags.join(',')
+      : frontmatter.tags;
+    const fixedTags = fixTags(frontmatter.tags);
+    const fixedTagsStr = Array.isArray(fixedTags) 
+      ? fixedTags.join(',')
+      : fixedTags;
+    
+    if (originalTags !== fixedTagsStr) {
+      frontmatter.tags = fixedTags;
+      modified = true;
+    }
+  }
+  
+  // Validate tags (after fixing casing)
+  const tagErrors = validateTags(frontmatter.tags);
+  if (tagErrors.length > 0) {
+    return { modified: false, errors: tagErrors };
+  }
+  
+  // Generate UUIDv7 if missing
+  if (!frontmatter.id || frontmatter.id === '') {
+    frontmatter.id = generateUUIDv7();
+    modified = true;
+  }
+  
+  // Compute hash
+  const currentHash = computeHash(body);
+  if (frontmatter.hash !== currentHash) {
+    frontmatter.hash = currentHash;
+    modified = true;
+  }
+  
+  // Write back if modified
+  if (modified) {
+    const newContent = serializeFrontmatter(frontmatter) + '\n' + body;
+    writeFileSync(filepath, newContent, 'utf-8');
+  }
+  
+  return { modified, errors: [] };
+}
+
+// Main
+const stagedFiles = getStagedMarkdownFiles();
+const errors = [];
+const modifiedFiles = [];
+
+for (const file of stagedFiles) {
+  try {
+    const result = processFile(file);
+    
+    if (result.errors && result.errors.length > 0) {
+      errors.push(`${file}:\n  ${result.errors.join('\n  ')}`);
+    }
+    
+    if (result.modified) {
+      modifiedFiles.push(file);
+    }
+  } catch (error) {
+    errors.push(`${file}: ${error.message}`);
+  }
+}
+
+// Re-stage modified files
+if (modifiedFiles.length > 0) {
+  try {
+    execSync(`git add ${modifiedFiles.join(' ')}`, { stdio: 'inherit' });
+  } catch (error) {
+    console.error('Failed to re-stage modified files');
+    process.exit(1);
+  }
+}
+
+// Report errors and exit
+if (errors.length > 0) {
+  console.error('\n❌ Pre-commit validation failed:\n');
+  console.error(errors.join('\n\n'));
+  console.error('');
+  process.exit(1);
+}
+
+process.exit(0);

@@ -1,0 +1,6 @@
+.DS_Store
+*.swp
+*~
+
+# Personal knowledge docs (not part of public tooling)
+private/
