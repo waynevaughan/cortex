@@ -64,7 +64,7 @@ The 18 observation types serve as a routing guide. Cognitive types (fact, opinio
 
 Observation types are organized into two groups:
 
-**Cognitive Observation Types** — products of minds. These require an entity with a mind to exist. They describe how minds model reality, form judgments, hold convictions, want things, learn from experience, commit to choices, and direct toward future states. Nine types: fact, opinion, belief, preference, lesson, decision, goal (short-term), goal (long-term), aspiration.
+**Cognitive Observation Types** — products of intelligent entities. These require an intelligent entity to exist. They describe how intelligent entities model reality, form judgments, hold convictions, want things, learn from experience, commit to choices, and direct toward future states. Eleven types: fact, opinion, belief, preference, lesson, decision, commitment, risk, goal (short-term), goal (long-term), aspiration.
 
 **Operational Observation Types** — practical structures and boundaries for organizing and constraining work. These are not products of minds, though minds recognize and create them. They describe how work is organized, tracked, and bounded. Types: constraint, and others to be defined (project, milestone, task, relationship under discussion).
 
@@ -146,10 +146,10 @@ Examples:
 
 ### preference
 
-A preference is a property of an entity with a mind that is useful for predicting that entity's behavior. A preference implies a choice — the entity wants A over B.
+A preference is a property of an intelligent entity that is useful for predicting that entity's behavior. A preference implies a choice — the entity wants A over B.
 
 Three parts:
-- **Entity with a mind** — preferences belong to humans, AI agents, or any entity with wants. No mind, no preference.
+- **Intelligent entity** — preferences belong to humans, AI agents, or any intelligent entity with wants. No intelligence, no preference.
 - **Useful for prediction** — the preference is valuable because it enables predicting what the entity will want in future situations.
 - **Implies a choice** — the entity wants A over B. If it cannot be phrased as "X prefers A over B," it is not a preference.
 
@@ -275,7 +275,7 @@ Examples:
 
 ### goal (short-term)
 
-A short-term goal is a desired future state held by an entity with a mind, with a near time horizon, that is concrete, measurable, and directly actionable.
+A short-term goal is a desired future state held by an intelligent entity, with a near time horizon, that is concrete, measurable, and directly actionable.
 
 Three parts:
 - **Desired future state** — it describes something that doesn't exist yet but the entity wants to bring about.
@@ -301,7 +301,7 @@ Examples:
 
 ### goal (long-term)
 
-A long-term goal is a desired future state held by an entity with a mind, with a distant but finite time horizon, that is concrete and measurable but requires sustained effort across many short-term goals.
+A long-term goal is a desired future state held by an intelligent entity, with a distant but finite time horizon, that is concrete and measurable but requires sustained effort across many short-term goals.
 
 Three parts:
 - **Desired future state** — it describes something that doesn't exist yet but the entity is working toward.
@@ -327,7 +327,7 @@ Examples:
 
 ### aspiration
 
-An aspiration is a desired future state held by an entity with a mind that defines direction and identity rather than a measurable destination. Aspirations are strategic — they may never be fully "achieved," but they guide every decision along the way.
+An aspiration is a desired future state held by an intelligent entity that defines direction and identity rather than a measurable destination. Aspirations are strategic — they may never be fully "achieved," but they guide every decision along the way.
 
 Three parts:
 - **Directional, not terminal** — it points toward a way of being, not a finish line. You don't arrive; you move closer.
@@ -568,7 +568,25 @@ Examples:
 
 ---
 
-**Terminology note:** Throughout this document, "intelligent entity" refers to any entity capable of cognition — humans, AI agents, or other intelligent systems. This term replaces earlier uses of "mind" or "entity with a mind" to avoid biological connotation that might cause an LLM to scope these concepts exclusively to humans. A full pass to update all prior definitions to use "intelligent entity" is pending.
+**Suggestions** are not an observation type. Suggestions are speech acts — ways of using language to accomplish something. When someone suggests "we should use Postgres," they are performing an action (proposing) that may lead to a decision. The suggestion itself is not worth capturing. What matters is what the suggestion produces:
+
+- If the suggestion leads to a decision ("Yes, we'll use Postgres"), extract the **decision**
+- If the suggestion is rejected or ignored, there's nothing to extract
+- If the suggestion surfaces a consideration worth tracking ("We should consider X"), it might produce a **task** ("Evaluate X") or a **risk** ("Not considering X could cause Y")
+
+The taxonomy stays at 18 types because suggestions don't represent a distinct cognitive or operational structure — they represent *how* cognitive structures (decisions, tasks, risks) come into being through conversation.
+
+---
+
+**People** are not an observation type. People are **entities** — nodes in the knowledge graph, not observations about nodes. The observation pipeline extracts facts, preferences, beliefs, and other observation types *about* people. Those observations reference people as entities. The knowledge graph maintains the entity records (Wayne, Carolyn, Max, Cole, etc.) and connects them to observations through entity tagging.
+
+Example: "Wayne prefers honest feedback over softened answers" is an observation of type **preference** that references the entity **Wayne**. Wayne himself is not an observation — he is the entity the observation is about.
+
+This distinction matters for the pipeline: the extractor identifies observation types and tags them with entity references. The graph builder maintains the entity nodes and connects observations to them.
+
+---
+
+**Terminology note:** Throughout this document, "intelligent entity" refers to any entity capable of cognition — humans, AI agents, or other intelligent systems. This term replaces earlier uses of "mind" or "entity with a mind" to avoid biological connotation that might cause an LLM to scope these concepts exclusively to humans. All definitions have been updated to use "intelligent entity" consistently.
 
 ---
 
