@@ -1,0 +1,1552 @@
+{
+  "version": 1,
+  "builtAt": "2026-02-15T00:55:36.196Z",
+  "mtimes": {
+    "vault/CONVENTIONS.md": 1771080947201.431,
+    "vault/INDEX.md": 1771080951988.5923,
+    "vault/PROFILES.md": 1771080996749.883,
+    "vault/README.md": 1771082641050.8364,
+    "vault/observations/2026-02-15-116ed205.md": 1771116932830.9841,
+    "vault/observations/2026-02-15-45792a90.md": 1771116933494.2344,
+    "vault/observations/2026-02-15-930a63e2.md": 1771116934171.1401,
+    "vault/observations/2026-02-15-e6e2a59e.md": 1771116934885.7405,
+    "vault/observations/2026-02-15-fde3a87d.md": 1771116935542.7673,
+    "vault/private/DECISIONS.md": 1771106696662.495,
+    "vault/private/implementation-plan.md": 1771100907219.8706,
+    "vault/private/integration-map.md": 1771100599065.7517,
+    "vault/private/observer-prompt-spec.md": 1771100615997.239,
+    "vault/private/openclaw-x-accounts.md": 1771080996746.7646,
+    "vault/private/planning/adoption-review-decisions-2026-02-14.md": 1771090480815.9785,
+    "vault/private/planning/adoption-review-plan.md": 1771080996744.1204,
+    "vault/private/planning/improvement-plan-2026-02-14.md": 1771080996746.486,
+    "vault/private/research/context-window-performance-opus-4-6.md": 1771080996744.744,
+    "vault/private/research/cortex-filesystem-comparison.md": 1771080996745.057,
+    "vault/private/research/deep-dive-comparison.md": 1771028005488.7217,
+    "vault/private/research/existing-systems.md": 1771021071241.6787,
+    "vault/private/reviews/code-review-2026-02-13.md": 1771080996744.4526,
+    "vault/private/reviews/consistency-audit-2026-02-14.md": 1771098798509.4526,
+    "vault/private/reviews/failure-mode-analysis-2026-02-14.md": 1771098882128.4082,
+    "vault/private/reviews/implementability-review-2026-02-14.md": 1771098597510.1877,
+    "vault/private/reviews/planning-consistency-2026-02-14.md": 1771100271949.969,
+    "vault/private/reviews/planning-implementability-2026-02-14.md": 1771100294274.0063,
+    "vault/private/reviews/security-review-2026-02-14.md": 1771100974268.1343,
+    "vault/private/reviews/spec-critique-2026-02-14.md": 1771095393600.703,
+    "vault/private/reviews/spec-critique-v2-2026-02-14.md": 1771096015546.9631,
+    "vault/private/schema-data-model.md": 1771100592156.889
+  },
+  "nodes": [
+    {
+      "id": "doc:vault/CONVENTIONS.md",
+      "type": "document",
+      "vault": "vault",
+      "label": "CONVENTIONS",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 0
+    },
+    {
+      "id": "doc:vault/INDEX.md",
+      "type": "document",
+      "vault": "vault",
+      "label": "INDEX",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 0
+    },
+    {
+      "id": "doc:vault/PROFILES.md",
+      "type": "document",
+      "vault": "vault",
+      "label": "PROFILES",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 0
+    },
+    {
+      "id": "doc:vault/README.md",
+      "type": "document",
+      "vault": "vault",
+      "label": "README",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 0
+    },
+    {
+      "id": "doc:vault/observations/2026-02-15-116ed205.md",
+      "type": "document",
+      "vault": "vault",
+      "label": "Colestream Discord updates via cron to channel 1470820354871263324",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 0
+    },
+    {
+      "id": "doc:vault/observations/2026-02-15-45792a90.md",
+      "type": "document",
+      "vault": "vault",
+      "label": "Cron sandbox may lack expected files",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 0
+    },
+    {
+      "id": "doc:vault/observations/2026-02-15-930a63e2.md",
+      "type": "document",
+      "vault": "vault",
+      "label": "Cron-triggered sandboxes may lack expected context files",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 0
+    },
+    {
+      "id": "obs:e6e2a59e",
+      "type": "observation",
+      "vault": "vault",
+      "label": "Daily Cortex backup cron job configured",
+      "aliases": [],
+      "tags": [],
+      "created": "2026-02-15T00:55:04.363Z",
+      "mentions": 0,
+      "confidence": 0.8,
+      "importance": 0.5,
+      "obsType": "fact"
+    },
+    {
+      "id": "project:cortex",
+      "type": "project",
+      "vault": "vault",
+      "label": "Cortex",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 7
+    },
+    {
+      "id": "person:cole",
+      "type": "person",
+      "vault": "vault",
+      "label": "Cole",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 10
+    },
+    {
+      "id": "doc:vault/observations/2026-02-15-fde3a87d.md",
+      "type": "document",
+      "vault": "vault",
+      "label": "Colestream Discord updates via cron",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 0
+    },
+    {
+      "id": "doc:vault/private/DECISIONS.md",
+      "type": "document",
+      "vault": "vault",
+      "label": "DECISIONS",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 0
+    },
+    {
+      "id": "decision:D1",
+      "type": "decision",
+      "vault": "vault",
+      "label": "D1",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 3
+    },
+    {
+      "id": "decision:D2",
+      "type": "decision",
+      "vault": "vault",
+      "label": "D2",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 4
+    },
+    {
+      "id": "decision:D3",
+      "type": "decision",
+      "vault": "vault",
+      "label": "D3",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 3
+    },
+    {
+      "id": "decision:D4",
+      "type": "decision",
+      "vault": "vault",
+      "label": "D4",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 4
+    },
+    {
+      "id": "decision:D5",
+      "type": "decision",
+      "vault": "vault",
+      "label": "D5",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 1
+    },
+    {
+      "id": "decision:D6",
+      "type": "decision",
+      "vault": "vault",
+      "label": "D6",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 1
+    },
+    {
+      "id": "doc:vault/private/implementation-plan.md",
+      "type": "document",
+      "vault": "vault",
+      "label": "implementation-plan",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 0
+    },
+    {
+      "id": "person:anthropic-ai",
+      "type": "person",
+      "vault": "vault",
+      "label": "Anthropic Ai",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 1
+    },
+    {
+      "id": "person:mentions",
+      "type": "person",
+      "vault": "vault",
+      "label": "Mentions",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 1
+    },
+    {
+      "id": "doc:vault/private/integration-map.md",
+      "type": "document",
+      "vault": "vault",
+      "label": "Integration Map",
+      "aliases": [],
+      "tags": [
+        "cortex",
+        "integration",
+        "planning"
+      ],
+      "created": "",
+      "mentions": 0
+    },
+    {
+      "id": "tag:cortex",
+      "type": "tag",
+      "vault": "vault",
+      "label": "cortex",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 3
+    },
+    {
+      "id": "tag:integration",
+      "type": "tag",
+      "vault": "vault",
+      "label": "integration",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 1
+    },
+    {
+      "id": "tag:planning",
+      "type": "tag",
+      "vault": "vault",
+      "label": "planning",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 3
+    },
+    {
+      "id": "doc:vault/private/observer-prompt-spec.md",
+      "type": "document",
+      "vault": "vault",
+      "label": "Observer Prompt Specification",
+      "aliases": [],
+      "tags": [
+        "cortex",
+        "observer",
+        "planning"
+      ],
+      "created": "",
+      "mentions": 0
+    },
+    {
+      "id": "tag:observer",
+      "type": "tag",
+      "vault": "vault",
+      "label": "observer",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 1
+    },
+    {
+      "id": "doc:vault/private/openclaw-x-accounts.md",
+      "type": "document",
+      "vault": "vault",
+      "label": "Top OpenClaw X/Twitter Accounts for Research",
+      "aliases": [],
+      "tags": [
+        "type/guide",
+        "status/active",
+        "topic/openclaw",
+        "topic/research"
+      ],
+      "created": "2026-02-13",
+      "mentions": 0
+    },
+    {
+      "id": "tag:type-guide",
+      "type": "tag",
+      "vault": "vault",
+      "label": "type/guide",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 1
+    },
+    {
+      "id": "tag:status-active",
+      "type": "tag",
+      "vault": "vault",
+      "label": "status/active",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 7
+    },
+    {
+      "id": "tag:topic-openclaw",
+      "type": "tag",
+      "vault": "vault",
+      "label": "topic/openclaw",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 1
+    },
+    {
+      "id": "tag:topic-research",
+      "type": "tag",
+      "vault": "vault",
+      "label": "topic/research",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 1
+    },
+    {
+      "id": "person:openclaw",
+      "type": "person",
+      "vault": "vault",
+      "label": "Openclaw",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 1
+    },
+    {
+      "id": "person:steipete",
+      "type": "person",
+      "vault": "vault",
+      "label": "Steipete",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 1
+    },
+    {
+      "id": "person:thewilloftheshadow",
+      "type": "person",
+      "vault": "vault",
+      "label": "Thewilloftheshadow",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 1
+    },
+    {
+      "id": "person:cpojer",
+      "type": "person",
+      "vault": "vault",
+      "label": "Cpojer",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 1
+    },
+    {
+      "id": "person:nickspisak",
+      "type": "person",
+      "vault": "vault",
+      "label": "Nickspisak",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 1
+    },
+    {
+      "id": "person:cocktailpeanut",
+      "type": "person",
+      "vault": "vault",
+      "label": "Cocktailpeanut",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 1
+    },
+    {
+      "id": "person:matthewsabia",
+      "type": "person",
+      "vault": "vault",
+      "label": "Matthewsabia",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 1
+    },
+    {
+      "id": "person:indydevdan",
+      "type": "person",
+      "vault": "vault",
+      "label": "Indydevdan",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 1
+    },
+    {
+      "id": "person:milesdeutscher",
+      "type": "person",
+      "vault": "vault",
+      "label": "Milesdeutscher",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 1
+    },
+    {
+      "id": "person:jilles",
+      "type": "person",
+      "vault": "vault",
+      "label": "Jilles",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 1
+    },
+    {
+      "id": "person:paulsolt",
+      "type": "person",
+      "vault": "vault",
+      "label": "Paulsolt",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 1
+    },
+    {
+      "id": "person:kloss",
+      "type": "person",
+      "vault": "vault",
+      "label": "Kloss",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 1
+    },
+    {
+      "id": "person:aiedge",
+      "type": "person",
+      "vault": "vault",
+      "label": "Aiedge",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 1
+    },
+    {
+      "id": "person:karpathy",
+      "type": "person",
+      "vault": "vault",
+      "label": "Karpathy",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 1
+    },
+    {
+      "id": "person:lexfridman",
+      "type": "person",
+      "vault": "vault",
+      "label": "Lexfridman",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 1
+    },
+    {
+      "id": "person:gregisenberg",
+      "type": "person",
+      "vault": "vault",
+      "label": "Gregisenberg",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 1
+    },
+    {
+      "id": "person:weisjohn",
+      "type": "person",
+      "vault": "vault",
+      "label": "Weisjohn",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 1
+    },
+    {
+      "id": "person:tobi-bsf",
+      "type": "person",
+      "vault": "vault",
+      "label": "Tobi Bsf",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 1
+    },
+    {
+      "id": "person:swyx",
+      "type": "person",
+      "vault": "vault",
+      "label": "Swyx",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 1
+    },
+    {
+      "id": "doc:vault/private/planning/adoption-review-decisions-2026-02-14.md",
+      "type": "document",
+      "vault": "vault",
+      "label": "Adoption Review Decisions — 2026-02-14",
+      "aliases": [],
+      "tags": [
+        "type/decision",
+        "status/active",
+        "topic/architecture",
+        "project/cortex",
+        "project/nexus"
+      ],
+      "created": "2026-02-14",
+      "mentions": 0
+    },
+    {
+      "id": "tag:type-decision",
+      "type": "tag",
+      "vault": "vault",
+      "label": "type/decision",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 1
+    },
+    {
+      "id": "tag:topic-architecture",
+      "type": "tag",
+      "vault": "vault",
+      "label": "topic/architecture",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 4
+    },
+    {
+      "id": "project:nexus",
+      "type": "project",
+      "vault": "vault",
+      "label": "nexus",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 4
+    },
+    {
+      "id": "decision:D16",
+      "type": "decision",
+      "vault": "vault",
+      "label": "D16",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 3
+    },
+    {
+      "id": "decision:D17",
+      "type": "decision",
+      "vault": "vault",
+      "label": "D17",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 1
+    },
+    {
+      "id": "decision:D18",
+      "type": "decision",
+      "vault": "vault",
+      "label": "D18",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 1
+    },
+    {
+      "id": "decision:D21",
+      "type": "decision",
+      "vault": "vault",
+      "label": "D21",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 1
+    },
+    {
+      "id": "decision:D22",
+      "type": "decision",
+      "vault": "vault",
+      "label": "D22",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 1
+    },
+    {
+      "id": "decision:D23",
+      "type": "decision",
+      "vault": "vault",
+      "label": "D23",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 1
+    },
+    {
+      "id": "decision:D24",
+      "type": "decision",
+      "vault": "vault",
+      "label": "D24",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 1
+    },
+    {
+      "id": "doc:vault/private/planning/adoption-review-plan.md",
+      "type": "document",
+      "vault": "vault",
+      "label": "Feature Adoption Review Plan",
+      "aliases": [],
+      "tags": [
+        "type/spec",
+        "status/active",
+        "topic/architecture",
+        "project/cortex",
+        "project/nexus"
+      ],
+      "created": "2026-02-14",
+      "mentions": 0
+    },
+    {
+      "id": "tag:type-spec",
+      "type": "tag",
+      "vault": "vault",
+      "label": "type/spec",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 2
+    },
+    {
+      "id": "doc:vault/private/planning/improvement-plan-2026-02-14.md",
+      "type": "document",
+      "vault": "vault",
+      "label": "Cortex/Nexus Improvement Plan",
+      "aliases": [],
+      "tags": [
+        "type/spec",
+        "status/active",
+        "topic/architecture",
+        "project/cortex",
+        "project/nexus"
+      ],
+      "created": "2026-02-14",
+      "mentions": 0
+    },
+    {
+      "id": "doc:vault/private/research/context-window-performance-opus-4-6.md",
+      "type": "document",
+      "vault": "vault",
+      "label": "Context Window Performance — Claude Opus 4.6",
+      "aliases": [],
+      "tags": [
+        "type/research",
+        "status/active",
+        "topic/context-management",
+        "topic/performance",
+        "project/cortex"
+      ],
+      "created": "2026-02-13",
+      "mentions": 0
+    },
+    {
+      "id": "tag:type-research",
+      "type": "tag",
+      "vault": "vault",
+      "label": "type/research",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 2
+    },
+    {
+      "id": "tag:topic-context-management",
+      "type": "tag",
+      "vault": "vault",
+      "label": "topic/context-management",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 1
+    },
+    {
+      "id": "tag:topic-performance",
+      "type": "tag",
+      "vault": "vault",
+      "label": "topic/performance",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 1
+    },
+    {
+      "id": "doc:vault/private/research/cortex-filesystem-comparison.md",
+      "type": "document",
+      "vault": "vault",
+      "label": "Cortex as File System — Architectural Comparison",
+      "aliases": [],
+      "tags": [
+        "type/research",
+        "status/active",
+        "topic/architecture",
+        "topic/memory",
+        "project/cortex"
+      ],
+      "created": "2026-02-14",
+      "mentions": 0
+    },
+    {
+      "id": "tag:topic-memory",
+      "type": "tag",
+      "vault": "vault",
+      "label": "topic/memory",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 1
+    },
+    {
+      "id": "doc:vault/private/research/deep-dive-comparison.md",
+      "type": "document",
+      "vault": "vault",
+      "label": "deep-dive-comparison",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 0
+    },
+    {
+      "id": "doc:vault/private/research/existing-systems.md",
+      "type": "document",
+      "vault": "vault",
+      "label": "existing-systems",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 0
+    },
+    {
+      "id": "doc:vault/private/reviews/code-review-2026-02-13.md",
+      "type": "document",
+      "vault": "vault",
+      "label": "Code Review: Nexus, Cortex, and Vault (2026-02-13)",
+      "aliases": [],
+      "tags": [
+        "type/retrospective",
+        "status/active",
+        "topic/code-quality",
+        "project/nexus",
+        "project/cortex"
+      ],
+      "created": "2026-02-13",
+      "mentions": 0
+    },
+    {
+      "id": "person:claude",
+      "type": "person",
+      "vault": "vault",
+      "label": "Claude",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 1
+    },
+    {
+      "id": "tag:type-retrospective",
+      "type": "tag",
+      "vault": "vault",
+      "label": "type/retrospective",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 1
+    },
+    {
+      "id": "tag:topic-code-quality",
+      "type": "tag",
+      "vault": "vault",
+      "label": "topic/code-quality",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 1
+    },
+    {
+      "id": "decision:D15",
+      "type": "decision",
+      "vault": "vault",
+      "label": "D15",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 1
+    },
+    {
+      "id": "doc:vault/private/reviews/consistency-audit-2026-02-14.md",
+      "type": "document",
+      "vault": "vault",
+      "label": "consistency-audit-2026-02-14",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 0
+    },
+    {
+      "id": "doc:vault/private/reviews/failure-mode-analysis-2026-02-14.md",
+      "type": "document",
+      "vault": "vault",
+      "label": "failure-mode-analysis-2026-02-14",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 0
+    },
+    {
+      "id": "doc:vault/private/reviews/implementability-review-2026-02-14.md",
+      "type": "document",
+      "vault": "vault",
+      "label": "implementability-review-2026-02-14",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 0
+    },
+    {
+      "id": "person:waynevaughan",
+      "type": "person",
+      "vault": "vault",
+      "label": "Waynevaughan",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 1
+    },
+    {
+      "id": "doc:vault/private/reviews/planning-consistency-2026-02-14.md",
+      "type": "document",
+      "vault": "vault",
+      "label": "planning-consistency-2026-02-14",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 0
+    },
+    {
+      "id": "doc:vault/private/reviews/planning-implementability-2026-02-14.md",
+      "type": "document",
+      "vault": "vault",
+      "label": "planning-implementability-2026-02-14",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 0
+    },
+    {
+      "id": "doc:vault/private/reviews/security-review-2026-02-14.md",
+      "type": "document",
+      "vault": "vault",
+      "label": "security-review-2026-02-14",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 0
+    },
+    {
+      "id": "doc:vault/private/reviews/spec-critique-2026-02-14.md",
+      "type": "document",
+      "vault": "vault",
+      "label": "spec-critique-2026-02-14",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 0
+    },
+    {
+      "id": "doc:vault/private/reviews/spec-critique-v2-2026-02-14.md",
+      "type": "document",
+      "vault": "vault",
+      "label": "spec-critique-v2-2026-02-14",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 0
+    },
+    {
+      "id": "doc:vault/private/schema-data-model.md",
+      "type": "document",
+      "vault": "vault",
+      "label": "Schema & Data Model",
+      "aliases": [],
+      "tags": [
+        "cortex",
+        "schema",
+        "planning"
+      ],
+      "created": "",
+      "mentions": 0
+    },
+    {
+      "id": "tag:schema",
+      "type": "tag",
+      "vault": "vault",
+      "label": "schema",
+      "aliases": [],
+      "tags": [],
+      "created": "",
+      "mentions": 1
+    }
+  ],
+  "edges": [
+    {
+      "source": "doc:vault/CONVENTIONS.md",
+      "target": "doc:vault/double brackets.md",
+      "type": "links_to"
+    },
+    {
+      "source": "project:cortex",
+      "target": "obs:e6e2a59e",
+      "type": "observed_in"
+    },
+    {
+      "source": "person:cole",
+      "target": "obs:e6e2a59e",
+      "type": "observed_in"
+    },
+    {
+      "source": "doc:vault/private/DECISIONS.md",
+      "target": "decision:D1",
+      "type": "depends_on"
+    },
+    {
+      "source": "doc:vault/private/DECISIONS.md",
+      "target": "decision:D2",
+      "type": "depends_on"
+    },
+    {
+      "source": "doc:vault/private/DECISIONS.md",
+      "target": "decision:D3",
+      "type": "depends_on"
+    },
+    {
+      "source": "doc:vault/private/DECISIONS.md",
+      "target": "decision:D4",
+      "type": "depends_on"
+    },
+    {
+      "source": "doc:vault/private/DECISIONS.md",
+      "target": "decision:D5",
+      "type": "depends_on"
+    },
+    {
+      "source": "doc:vault/private/DECISIONS.md",
+      "target": "decision:D6",
+      "type": "depends_on"
+    },
+    {
+      "source": "doc:vault/private/implementation-plan.md",
+      "target": "doc:vault/wiki-links.md",
+      "type": "links_to"
+    },
+    {
+      "source": "doc:vault/private/implementation-plan.md",
+      "target": "person:anthropic-ai",
+      "type": "about"
+    },
+    {
+      "source": "doc:vault/private/implementation-plan.md",
+      "target": "person:mentions",
+      "type": "about"
+    },
+    {
+      "source": "doc:vault/private/implementation-plan.md",
+      "target": "decision:D4",
+      "type": "depends_on"
+    },
+    {
+      "source": "doc:vault/private/implementation-plan.md",
+      "target": "decision:D2",
+      "type": "depends_on"
+    },
+    {
+      "source": "doc:vault/private/integration-map.md",
+      "target": "person:cole",
+      "type": "authored_by"
+    },
+    {
+      "source": "doc:vault/private/integration-map.md",
+      "target": "tag:cortex",
+      "type": "tagged"
+    },
+    {
+      "source": "doc:vault/private/integration-map.md",
+      "target": "tag:integration",
+      "type": "tagged"
+    },
+    {
+      "source": "doc:vault/private/integration-map.md",
+      "target": "tag:planning",
+      "type": "tagged"
+    },
+    {
+      "source": "doc:vault/private/observer-prompt-spec.md",
+      "target": "person:cole",
+      "type": "authored_by"
+    },
+    {
+      "source": "doc:vault/private/observer-prompt-spec.md",
+      "target": "tag:cortex",
+      "type": "tagged"
+    },
+    {
+      "source": "doc:vault/private/observer-prompt-spec.md",
+      "target": "tag:observer",
+      "type": "tagged"
+    },
+    {
+      "source": "doc:vault/private/observer-prompt-spec.md",
+      "target": "tag:planning",
+      "type": "tagged"
+    },
+    {
+      "source": "doc:vault/private/openclaw-x-accounts.md",
+      "target": "person:cole",
+      "type": "authored_by"
+    },
+    {
+      "source": "doc:vault/private/openclaw-x-accounts.md",
+      "target": "tag:type-guide",
+      "type": "tagged"
+    },
+    {
+      "source": "doc:vault/private/openclaw-x-accounts.md",
+      "target": "tag:status-active",
+      "type": "tagged"
+    },
+    {
+      "source": "doc:vault/private/openclaw-x-accounts.md",
+      "target": "tag:topic-openclaw",
+      "type": "tagged"
+    },
+    {
+      "source": "doc:vault/private/openclaw-x-accounts.md",
+      "target": "tag:topic-research",
+      "type": "tagged"
+    },
+    {
+      "source": "doc:vault/private/openclaw-x-accounts.md",
+      "target": "person:openclaw",
+      "type": "about"
+    },
+    {
+      "source": "doc:vault/private/openclaw-x-accounts.md",
+      "target": "person:steipete",
+      "type": "about"
+    },
+    {
+      "source": "doc:vault/private/openclaw-x-accounts.md",
+      "target": "person:thewilloftheshadow",
+      "type": "about"
+    },
+    {
+      "source": "doc:vault/private/openclaw-x-accounts.md",
+      "target": "person:cpojer",
+      "type": "about"
+    },
+    {
+      "source": "doc:vault/private/openclaw-x-accounts.md",
+      "target": "person:nickspisak",
+      "type": "about"
+    },
+    {
+      "source": "doc:vault/private/openclaw-x-accounts.md",
+      "target": "person:cocktailpeanut",
+      "type": "about"
+    },
+    {
+      "source": "doc:vault/private/openclaw-x-accounts.md",
+      "target": "person:matthewsabia",
+      "type": "about"
+    },
+    {
+      "source": "doc:vault/private/openclaw-x-accounts.md",
+      "target": "person:indydevdan",
+      "type": "about"
+    },
+    {
+      "source": "doc:vault/private/openclaw-x-accounts.md",
+      "target": "person:milesdeutscher",
+      "type": "about"
+    },
+    {
+      "source": "doc:vault/private/openclaw-x-accounts.md",
+      "target": "person:jilles",
+      "type": "about"
+    },
+    {
+      "source": "doc:vault/private/openclaw-x-accounts.md",
+      "target": "person:paulsolt",
+      "type": "about"
+    },
+    {
+      "source": "doc:vault/private/openclaw-x-accounts.md",
+      "target": "person:kloss",
+      "type": "about"
+    },
+    {
+      "source": "doc:vault/private/openclaw-x-accounts.md",
+      "target": "person:aiedge",
+      "type": "about"
+    },
+    {
+      "source": "doc:vault/private/openclaw-x-accounts.md",
+      "target": "person:karpathy",
+      "type": "about"
+    },
+    {
+      "source": "doc:vault/private/openclaw-x-accounts.md",
+      "target": "person:lexfridman",
+      "type": "about"
+    },
+    {
+      "source": "doc:vault/private/openclaw-x-accounts.md",
+      "target": "person:gregisenberg",
+      "type": "about"
+    },
+    {
+      "source": "doc:vault/private/openclaw-x-accounts.md",
+      "target": "person:weisjohn",
+      "type": "about"
+    },
+    {
+      "source": "doc:vault/private/openclaw-x-accounts.md",
+      "target": "person:tobi-bsf",
+      "type": "about"
+    },
+    {
+      "source": "doc:vault/private/openclaw-x-accounts.md",
+      "target": "person:swyx",
+      "type": "about"
+    },
+    {
+      "source": "doc:vault/private/planning/adoption-review-decisions-2026-02-14.md",
+      "target": "person:cole",
+      "type": "authored_by"
+    },
+    {
+      "source": "doc:vault/private/planning/adoption-review-decisions-2026-02-14.md",
+      "target": "tag:type-decision",
+      "type": "tagged"
+    },
+    {
+      "source": "doc:vault/private/planning/adoption-review-decisions-2026-02-14.md",
+      "target": "tag:status-active",
+      "type": "tagged"
+    },
+    {
+      "source": "doc:vault/private/planning/adoption-review-decisions-2026-02-14.md",
+      "target": "tag:topic-architecture",
+      "type": "tagged"
+    },
+    {
+      "source": "doc:vault/private/planning/adoption-review-decisions-2026-02-14.md",
+      "target": "project:cortex",
+      "type": "about"
+    },
+    {
+      "source": "doc:vault/private/planning/adoption-review-decisions-2026-02-14.md",
+      "target": "project:nexus",
+      "type": "about"
+    },
+    {
+      "source": "doc:vault/private/planning/adoption-review-decisions-2026-02-14.md",
+      "target": "doc:vault/wiki-links.md",
+      "type": "links_to"
+    },
+    {
+      "source": "doc:vault/private/planning/adoption-review-decisions-2026-02-14.md",
+      "target": "decision:D1",
+      "type": "depends_on"
+    },
+    {
+      "source": "doc:vault/private/planning/adoption-review-decisions-2026-02-14.md",
+      "target": "decision:D3",
+      "type": "depends_on"
+    },
+    {
+      "source": "doc:vault/private/planning/adoption-review-decisions-2026-02-14.md",
+      "target": "decision:D16",
+      "type": "depends_on"
+    },
+    {
+      "source": "doc:vault/private/planning/adoption-review-decisions-2026-02-14.md",
+      "target": "decision:D17",
+      "type": "depends_on"
+    },
+    {
+      "source": "doc:vault/private/planning/adoption-review-decisions-2026-02-14.md",
+      "target": "decision:D18",
+      "type": "depends_on"
+    },
+    {
+      "source": "doc:vault/private/planning/adoption-review-decisions-2026-02-14.md",
+      "target": "decision:D2",
+      "type": "depends_on"
+    },
+    {
+      "source": "doc:vault/private/planning/adoption-review-decisions-2026-02-14.md",
+      "target": "decision:D4",
+      "type": "depends_on"
+    },
+    {
+      "source": "doc:vault/private/planning/adoption-review-decisions-2026-02-14.md",
+      "target": "decision:D21",
+      "type": "depends_on"
+    },
+    {
+      "source": "doc:vault/private/planning/adoption-review-decisions-2026-02-14.md",
+      "target": "decision:D22",
+      "type": "depends_on"
+    },
+    {
+      "source": "doc:vault/private/planning/adoption-review-decisions-2026-02-14.md",
+      "target": "decision:D23",
+      "type": "depends_on"
+    },
+    {
+      "source": "doc:vault/private/planning/adoption-review-decisions-2026-02-14.md",
+      "target": "decision:D24",
+      "type": "depends_on"
+    },
+    {
+      "source": "doc:vault/private/planning/adoption-review-plan.md",
+      "target": "person:cole",
+      "type": "authored_by"
+    },
+    {
+      "source": "doc:vault/private/planning/adoption-review-plan.md",
+      "target": "tag:type-spec",
+      "type": "tagged"
+    },
+    {
+      "source": "doc:vault/private/planning/adoption-review-plan.md",
+      "target": "tag:status-active",
+      "type": "tagged"
+    },
+    {
+      "source": "doc:vault/private/planning/adoption-review-plan.md",
+      "target": "tag:topic-architecture",
+      "type": "tagged"
+    },
+    {
+      "source": "doc:vault/private/planning/adoption-review-plan.md",
+      "target": "project:cortex",
+      "type": "about"
+    },
+    {
+      "source": "doc:vault/private/planning/adoption-review-plan.md",
+      "target": "project:nexus",
+      "type": "about"
+    },
+    {
+      "source": "doc:vault/private/planning/adoption-review-plan.md",
+      "target": "doc:vault/entity-name.md",
+      "type": "links_to"
+    },
+    {
+      "source": "doc:vault/private/planning/adoption-review-plan.md",
+      "target": "decision:D1",
+      "type": "depends_on"
+    },
+    {
+      "source": "doc:vault/private/planning/adoption-review-plan.md",
+      "target": "decision:D2",
+      "type": "depends_on"
+    },
+    {
+      "source": "doc:vault/private/planning/adoption-review-plan.md",
+      "target": "decision:D3",
+      "type": "depends_on"
+    },
+    {
+      "source": "doc:vault/private/planning/adoption-review-plan.md",
+      "target": "decision:D4",
+      "type": "depends_on"
+    },
+    {
+      "source": "doc:vault/private/planning/improvement-plan-2026-02-14.md",
+      "target": "person:cole",
+      "type": "authored_by"
+    },
+    {
+      "source": "doc:vault/private/planning/improvement-plan-2026-02-14.md",
+      "target": "tag:type-spec",
+      "type": "tagged"
+    },
+    {
+      "source": "doc:vault/private/planning/improvement-plan-2026-02-14.md",
+      "target": "tag:status-active",
+      "type": "tagged"
+    },
+    {
+      "source": "doc:vault/private/planning/improvement-plan-2026-02-14.md",
+      "target": "tag:topic-architecture",
+      "type": "tagged"
+    },
+    {
+      "source": "doc:vault/private/planning/improvement-plan-2026-02-14.md",
+      "target": "project:cortex",
+      "type": "about"
+    },
+    {
+      "source": "doc:vault/private/planning/improvement-plan-2026-02-14.md",
+      "target": "project:nexus",
+      "type": "about"
+    },
+    {
+      "source": "doc:vault/private/research/context-window-performance-opus-4-6.md",
+      "target": "person:cole",
+      "type": "authored_by"
+    },
+    {
+      "source": "doc:vault/private/research/context-window-performance-opus-4-6.md",
+      "target": "tag:type-research",
+      "type": "tagged"
+    },
+    {
+      "source": "doc:vault/private/research/context-window-performance-opus-4-6.md",
+      "target": "tag:status-active",
+      "type": "tagged"
+    },
+    {
+      "source": "doc:vault/private/research/context-window-performance-opus-4-6.md",
+      "target": "tag:topic-context-management",
+      "type": "tagged"
+    },
+    {
+      "source": "doc:vault/private/research/context-window-performance-opus-4-6.md",
+      "target": "tag:topic-performance",
+      "type": "tagged"
+    },
+    {
+      "source": "doc:vault/private/research/context-window-performance-opus-4-6.md",
+      "target": "project:cortex",
+      "type": "about"
+    },
+    {
+      "source": "doc:vault/private/research/cortex-filesystem-comparison.md",
+      "target": "person:cole",
+      "type": "authored_by"
+    },
+    {
+      "source": "doc:vault/private/research/cortex-filesystem-comparison.md",
+      "target": "tag:type-research",
+      "type": "tagged"
+    },
+    {
+      "source": "doc:vault/private/research/cortex-filesystem-comparison.md",
+      "target": "tag:status-active",
+      "type": "tagged"
+    },
+    {
+      "source": "doc:vault/private/research/cortex-filesystem-comparison.md",
+      "target": "tag:topic-architecture",
+      "type": "tagged"
+    },
+    {
+      "source": "doc:vault/private/research/cortex-filesystem-comparison.md",
+      "target": "tag:topic-memory",
+      "type": "tagged"
+    },
+    {
+      "source": "doc:vault/private/research/cortex-filesystem-comparison.md",
+      "target": "project:cortex",
+      "type": "about"
+    },
+    {
+      "source": "doc:vault/private/reviews/code-review-2026-02-13.md",
+      "target": "person:claude",
+      "type": "authored_by"
+    },
+    {
+      "source": "doc:vault/private/reviews/code-review-2026-02-13.md",
+      "target": "tag:type-retrospective",
+      "type": "tagged"
+    },
+    {
+      "source": "doc:vault/private/reviews/code-review-2026-02-13.md",
+      "target": "tag:status-active",
+      "type": "tagged"
+    },
+    {
+      "source": "doc:vault/private/reviews/code-review-2026-02-13.md",
+      "target": "tag:topic-code-quality",
+      "type": "tagged"
+    },
+    {
+      "source": "doc:vault/private/reviews/code-review-2026-02-13.md",
+      "target": "project:nexus",
+      "type": "about"
+    },
+    {
+      "source": "doc:vault/private/reviews/code-review-2026-02-13.md",
+      "target": "project:cortex",
+      "type": "about"
+    },
+    {
+      "source": "doc:vault/private/reviews/code-review-2026-02-13.md",
+      "target": "decision:D15",
+      "type": "depends_on"
+    },
+    {
+      "source": "doc:vault/private/reviews/consistency-audit-2026-02-14.md",
+      "target": "doc:vault/wiki-links.md",
+      "type": "links_to"
+    },
+    {
+      "source": "doc:vault/private/reviews/consistency-audit-2026-02-14.md",
+      "target": "doc:vault/double brackets.md",
+      "type": "links_to"
+    },
+    {
+      "source": "doc:vault/private/reviews/implementability-review-2026-02-14.md",
+      "target": "doc:vault/wiki-links.md",
+      "type": "links_to"
+    },
+    {
+      "source": "doc:vault/private/reviews/implementability-review-2026-02-14.md",
+      "target": "doc:vault/double brackets.md",
+      "type": "links_to"
+    },
+    {
+      "source": "doc:vault/private/reviews/implementability-review-2026-02-14.md",
+      "target": "person:waynevaughan",
+      "type": "about"
+    },
+    {
+      "source": "doc:vault/private/reviews/planning-implementability-2026-02-14.md",
+      "target": "doc:vault/wiki-links.md",
+      "type": "links_to"
+    },
+    {
+      "source": "doc:vault/private/reviews/planning-implementability-2026-02-14.md",
+      "target": "doc:vault/double brackets.md",
+      "type": "links_to"
+    },
+    {
+      "source": "doc:vault/private/reviews/planning-implementability-2026-02-14.md",
+      "target": "decision:D16",
+      "type": "depends_on"
+    },
+    {
+      "source": "doc:vault/private/schema-data-model.md",
+      "target": "person:cole",
+      "type": "authored_by"
+    },
+    {
+      "source": "doc:vault/private/schema-data-model.md",
+      "target": "tag:cortex",
+      "type": "tagged"
+    },
+    {
+      "source": "doc:vault/private/schema-data-model.md",
+      "target": "tag:schema",
+      "type": "tagged"
+    },
+    {
+      "source": "doc:vault/private/schema-data-model.md",
+      "target": "tag:planning",
+      "type": "tagged"
+    },
+    {
+      "source": "doc:vault/private/schema-data-model.md",
+      "target": "decision:D16",
+      "type": "depends_on"
+    }
+  ]
+}
