@@ -1,0 +1,11 @@
+test/
+research/
+artifacts/
+memory/
+explorer/
+.git
+node_modules
+*.test.js
+HANDOFF.md
+MEMORY.md
+AGENTS.md
