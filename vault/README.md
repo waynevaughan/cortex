@@ -1,3 +1,11 @@
+---
+title: Cortex Vault
+author: cole
+created: 2026-02-14
+status: active
+tags: [type/guide, status/active, topic/architecture, project/cortex]
+---
+
 # Cortex Vault
 
 A knowledge management system for AI agents and their humans. Markdown documents with structured YAML frontmatter, validated by git hooks, indexed automatically.

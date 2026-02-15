@@ -1,3 +1,11 @@
+---
+title: Conventions
+author: cole
+created: 2026-02-14
+status: active
+tags: [type/guide, status/active, topic/architecture, project/cortex]
+---
+
 # Conventions
 
 Rules for writing and maintaining Vault documents.
@@ -29,17 +37,27 @@ Tags use `namespace/value` format. All values are lowercase.
 - `research` — Research findings or analysis
 - `guide` — How-to or instructional content
 - `convention` — Standards and rules
-- `retrospective` — Post-mortem or review
+- `review` — Code review, spec critique, audit, or security review
+- `retrospective` — Post-mortem or lessons learned
+- `observation` — Auto-extracted insight from session transcripts
 
 **`status/`** (required — exactly one per document):
 - `draft` — Work in progress, may change
 - `active` — Current and authoritative
+- `archived` — No longer current, kept for reference
 - `superseded` — Replaced by a newer document
 
 ### Open Namespaces (any value)
 
-- **`topic/`** — Subject classification (e.g., `topic/architecture`, `topic/memory`). Multiple allowed.
-- **`project/`** — Project association (e.g., `project/cortex`, `project/nexus`). Multiple allowed.
+- **`topic/`** — Subject classification. Multiple allowed. Common values:
+  - `topic/architecture`, `topic/context-management`, `topic/code-quality`
+  - `topic/observer`, `topic/schema`, `topic/integration`, `topic/memory`
+- **`project/`** — Project association. Multiple allowed:
+  - `project/cortex`, `project/nexus`, `project/openclaw`
+
+### Rule: All Tags Must Be Namespaced
+
+No bare tags like `cortex`, `planning`, or `observer`. Every tag must use `namespace/value` format.
 
 ## Hash Computation
 
