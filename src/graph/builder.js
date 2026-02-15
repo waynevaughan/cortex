@@ -129,7 +129,7 @@ async function findMarkdownFiles(dir) {
     const fullPath = join(dir, entry.name);
     if (entry.isDirectory()) {
       // Skip hidden dirs and archive
-      if (entry.name.startsWith('.') || entry.name === 'node_modules') continue;
+      if (entry.name.startsWith('.') || entry.name === 'node_modules' || entry.name === 'archive') continue;
       results.push(...await findMarkdownFiles(fullPath));
     } else if (entry.name.endsWith('.md')) {
       results.push(fullPath);
