@@ -3,7 +3,7 @@
 This document defines the complete type taxonomy for the Cortex knowledge graph. It contains:
 
 1. **The knowledge graph split** — The agent's mind vs. the human's computer
-2. **The full type taxonomy** — 19 observation types (12 cognitive, 7 operational), each with rigorous first-principles definitions, distinguishing criteria, and examples
+2. **The full type taxonomy** — 18 observation types (11 cognitive, 7 operational), each with rigorous first-principles definitions, distinguishing criteria, and examples
 3. **Ontology implications** — These observation types are also the node types in the knowledge graph
 
 **Origin:** Built iteratively through dialogue between Wayne and Cole. Started from analysis of the first pipeline run (1,085 observations from 66 sessions — see [Pipeline Analysis](pipeline-analysis.md)) and evolved into first-principles epistemology. The taxonomy defines what Cortex knows and how it's organized.
@@ -34,7 +34,7 @@ We'll define the specific criteria for each type as we analyze them below.
 
 **(a) The agent's mind** — everything the agent needs to operate. This includes both memories (preferences, beliefs, lessons, interaction patterns) and structured data the agent uses to do work (project architectures, dependency maps, technical context). The agent organizes this however it sees fit. The agent decides what goes in, how it's structured, and what matters — optimized for whatever the agent believes it needs to perform its work effectively. This is not a human-curated knowledge base. It's the agent building its own cognitive infrastructure. Humans never see this directly and don't need to.
 
-Examples: "Wayne pushes back on complexity, prefers simplification." "When Wayne says 'proceed' he means stop discussing and execute." "Cortex uses SQLite — relevant for all technical decisions." "The pipeline has 19 observation types organized into cognitive and operational groups."
+Examples: "Wayne pushes back on complexity, prefers simplification." "When Wayne says 'proceed' he means stop discussing and execute." "Cortex uses SQLite — relevant for all technical decisions." "The pipeline has 18 observation types organized into cognitive and operational groups."
 
 **(b) The human's computer** — well-organized information that humans can search, browse, and use. Think of it like a file system, a wiki, a project tracker. Project descriptions, architecture documents, research reports, task lists, contacts. Organized in familiar hierarchies that humans expect — files and folders, categories and tags. The organizing principle is: what does the human need to find and use?
 
@@ -50,7 +50,7 @@ The same information can live in both. "Cortex uses SQLite" might be in the agen
 
 - **Human-facing knowledge** is retrieved *explicitly* — searched when doing work, queried by tools, rendered for humans through familiar interfaces. The format needs to be human-readable. The quality bar is "is this accurate, current, and organized so a human can find it?"
 
-The 19 observation types serve as a routing guide. Cognitive types (fact, opinion, belief, preference, lesson, decision, commitment, risk, suggestion, goals, aspiration) route predominantly to the **agent's mind** — they shape how the agent thinks and operates. Operational types (constraint, project, milestone, task, resource, event, dependency) often appear in **both** — the agent needs them for work, and humans need visibility into them.
+The 18 observation types serve as a routing guide. Cognitive types (fact, opinion, belief, preference, lesson, decision, commitment, risk, goals, aspiration) route predominantly to the **agent's mind** — they shape how the agent thinks and operates. Operational types (constraint, project, milestone, task, resource, event, dependency) often appear in **both** — the agent needs them for work, and humans need visibility into them.
 
 **Key insight:** A single observation can produce both. "We chose Postgres over MongoDB because Wayne values simplicity and local-first" contains agent knowledge (Wayne values simplicity — shapes future decisions) and human-facing knowledge (the project uses Postgres — belongs in the architecture doc). One extraction, two destinations.
 
@@ -64,13 +64,13 @@ The 19 observation types serve as a routing guide. Cognitive types (fact, opinio
 
 Observation types are organized into two groups:
 
-**Cognitive Observation Types** — products of minds. These require an entity with a mind to exist. They describe how minds model reality, form judgments, hold convictions, want things, learn from experience, commit to choices, and direct toward future states. Twelve types: fact, opinion, belief, preference, lesson, decision, commitment, risk, suggestion, goal (short-term), goal (long-term), aspiration.
+**Cognitive Observation Types** — products of minds. These require an entity with a mind to exist. They describe how minds model reality, form judgments, hold convictions, want things, learn from experience, commit to choices, and direct toward future states. Nine types: fact, opinion, belief, preference, lesson, decision, goal (short-term), goal (long-term), aspiration.
 
 **Operational Observation Types** — practical structures and boundaries for organizing and constraining work. These are not products of minds, though minds recognize and create them. They describe how work is organized, tracked, and bounded. Types: constraint, and others to be defined (project, milestone, task, relationship under discussion).
 
 Each cognitive type follows the same structure: definition, three parts, what it's NOT, quick test, examples.
 
-Twelve cognitive types: fact, opinion, belief, preference, lesson, decision, commitment, risk, suggestion, goal (short-term), goal (long-term), aspiration.
+Eleven cognitive types: fact, opinion, belief, preference, lesson, decision, commitment, risk, goal (short-term), goal (long-term), aspiration.
 
 ---
 
@@ -270,30 +270,6 @@ Examples:
 - ✅ "Analytic tool flags 15% probability of structural failure within 1000 flight hours — catastrophic severity."
 
 ---
-
-### suggestion
-
-A suggestion is a proposal from an entity that hasn't been accepted or rejected yet.
-
-Three parts:
-- **Proposed** — it puts something on the table for consideration. It's not yet committed or decided.
-- **Attributed** — someone specific is proposing it. Different entities may make competing suggestions.
-- **Actionable** — it's concrete enough to accept, reject, or modify. "Maybe we should think about X" is too vague. "Use JSONL for the production format" is a suggestion.
-
-What a suggestion is NOT:
-- Not a decision (a decision forecloses alternatives — a suggestion opens them)
-- Not an opinion (an opinion evaluates something — a suggestion proposes action)
-- Not a task (a task is assigned work — a suggestion is unaccepted)
-
-Quick test: "X proposes Y. Has anyone accepted?" If no one has committed, it's a suggestion. If accepted, it becomes a decision.
-
-Lifecycle: suggestion → decision (accepted), rejection (declined), or abandoned (never addressed). The suggestion-to-decision transition is a key moment in conversation — it's when authority commits.
-
-Examples:
-- ✅ "Cole suggests using JSONL for the production observation format."
-- ✅ "Wayne proposes splitting the taxonomy document into two separate docs."
-- ❌ "We decided to use JSONL." — that's a decision, not a suggestion. Someone already committed.
-- ❌ "I think JSONL is better than CSV." — that's an opinion evaluating formats, not a proposal.
 
 ---
 
@@ -598,7 +574,7 @@ Examples:
 
 ## Open Questions (to address during structured discussion)
 
-0. ~~**Are observation types more than observation types? Are they also node types in the knowledge graph?**~~ **RESOLVED: Yes.** The 19 observation types are both pipeline classification labels and knowledge graph node types. The taxonomy is the ontology.
+0. ~~**Are observation types more than observation types? Are they also node types in the knowledge graph?**~~ **RESOLVED: Yes.** The 18 observation types are both pipeline classification labels and knowledge graph node types. The taxonomy is the ontology.
 
 0. **Relationships are not an observation type — they are graph structure.** The pipeline extracts facts; the graph and consolidation process handle relationship discovery and strengthening. See Q7 in `vault-consolidation-design.md`.
 
