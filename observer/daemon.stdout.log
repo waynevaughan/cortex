@@ -1,0 +1,108 @@
+[daemon] Starting observer daemon
+[daemon] Transcripts: /Users/cole/.openclaw/agents/main/sessions
+[daemon] Vault: /Users/cole/projects/cortex/vault
+[daemon] Processing /Users/cole/.openclaw/agents/main/sessions/04fa9fc6-2550-406e-a9ab-cd88fd41bcfb.jsonl from offset 0 (4886 new bytes)
+[daemon] Processing /Users/cole/.openclaw/agents/main/sessions/09da7762-d228-4b9c-9c05-ceb95d4d8322.jsonl from offset 0 (7056 new bytes)
+[daemon] Processing /Users/cole/.openclaw/agents/main/sessions/0be831f0-3986-4d17-b0cd-9ab926c5e315.jsonl from offset 0 (549510 new bytes)
+[staging] Wrote /Users/cole/projects/cortex/observer/staging/2026-02-15-7d4b2b4d.md
+[staging] Wrote /Users/cole/projects/cortex/observer/staging/2026-02-15-16e4ce95.md
+[staging] Wrote /Users/cole/projects/cortex/observer/staging/2026-02-15-76a7fb0d.md
+[staging] Wrote /Users/cole/projects/cortex/observer/staging/2026-02-15-680f7594.md
+[staging] Wrote /Users/cole/projects/cortex/observer/staging/2026-02-15-4d334691.md
+[staging] Wrote /Users/cole/projects/cortex/observer/staging/2026-02-15-b6aedb0e.md
+[staging] Wrote /Users/cole/projects/cortex/observer/staging/2026-02-15-34d426db.md
+[staging] Wrote /Users/cole/projects/cortex/observer/staging/2026-02-15-76e0c948.md
+[staging] Wrote /Users/cole/projects/cortex/observer/staging/2026-02-15-f7eb43c8.md
+[staging] Wrote /Users/cole/projects/cortex/observer/staging/2026-02-15-5a611e43.md
+[staging] Wrote /Users/cole/projects/cortex/observer/staging/2026-02-15-c957a37d.md
+[staging] Wrote /Users/cole/projects/cortex/observer/staging/2026-02-15-58b60c5f.md
+[staging] Wrote /Users/cole/projects/cortex/observer/staging/2026-02-15-7e0de0da.md
+[staging] Wrote /Users/cole/projects/cortex/observer/staging/2026-02-15-b446add2.md
+[promoter] Promoted 2026-02-15-16e4ce95.md
+[promoter] Promoted 2026-02-15-34d426db.md
+[promoter] Promoted 2026-02-15-4d334691.md
+[promoter] Promoted 2026-02-15-58b60c5f.md
+[promoter] Promoted 2026-02-15-5a611e43.md
+[promoter] Promoted 2026-02-15-680f7594.md
+[promoter] Promoted 2026-02-15-76a7fb0d.md
+[promoter] Promoted 2026-02-15-76e0c948.md
+[promoter] Promoted 2026-02-15-7d4b2b4d.md
+[promoter] Promoted 2026-02-15-7e0de0da.md
+[promoter] Promoted 2026-02-15-b446add2.md
+[promoter] Promoted 2026-02-15-b6aedb0e.md
+[promoter] Promoted 2026-02-15-c957a37d.md
+[promoter] Promoted 2026-02-15-f7eb43c8.md
+[daemon] Promoted 14 observations
+[daemon] Graph rebuild triggered
+[daemon] Extracted 14 observations from 0be831f0-3986-4d17-b0cd-9ab926c5e315.jsonl
+[daemon] Processing /Users/cole/.openclaw/agents/main/sessions/1396299e-f8ec-4140-b72f-c2a306a97f9d.jsonl from offset 0 (116809 new bytes)
+[staging] Wrote /Users/cole/projects/cortex/observer/staging/2026-02-15-754fa595.md
+[staging] Wrote /Users/cole/projects/cortex/observer/staging/2026-02-15-f10fd90f.md
+[staging] Wrote /Users/cole/projects/cortex/observer/staging/2026-02-15-a0abb209.md
+[staging] Wrote /Users/cole/projects/cortex/observer/staging/2026-02-15-24b01a4d.md
+[staging] Wrote /Users/cole/projects/cortex/observer/staging/2026-02-15-ece7212f.md
+[promoter] Promoted 2026-02-15-24b01a4d.md
+[promoter] Promoted 2026-02-15-754fa595.md
+[promoter] Promoted 2026-02-15-a0abb209.md
+[promoter] Promoted 2026-02-15-ece7212f.md
+[promoter] Promoted 2026-02-15-f10fd90f.md
+[daemon] Promoted 5 observations
+[daemon] Graph rebuild triggered
+[daemon] Extracted 5 observations from 1396299e-f8ec-4140-b72f-c2a306a97f9d.jsonl
+[daemon] Processing /Users/cole/.openclaw/agents/main/sessions/214e4378-d0d4-44f4-af46-d48fa39f56e1.jsonl from offset 0 (1293 new bytes)
+[daemon] Processing /Users/cole/.openclaw/agents/main/sessions/24afd449-003e-4d6e-bf87-9c9d90a3c978.jsonl from offset 0 (1057630 new bytes)
+[daemon] Processing /Users/cole/.openclaw/agents/main/sessions/263796f5-339b-4c92-9413-5ec08d79310f.jsonl from offset 0 (1495465 new bytes)
+[staging] Wrote /Users/cole/projects/cortex/observer/staging/2026-02-15-b4b09f88.md
+[staging] Wrote /Users/cole/projects/cortex/observer/staging/2026-02-15-88a882b4.md
+[staging] Wrote /Users/cole/projects/cortex/observer/staging/2026-02-15-9f8f2216.md
+[staging] Wrote /Users/cole/projects/cortex/observer/staging/2026-02-15-ccdc6c13.md
+[staging] Wrote /Users/cole/projects/cortex/observer/staging/2026-02-15-d6042c11.md
+[promoter] Promoted 2026-02-15-88a882b4.md
+[promoter] Promoted 2026-02-15-9f8f2216.md
+[promoter] Promoted 2026-02-15-b4b09f88.md
+[promoter] Promoted 2026-02-15-ccdc6c13.md
+[promoter] Promoted 2026-02-15-d6042c11.md
+[daemon] Promoted 5 observations
+[daemon] Graph rebuild triggered
+[daemon] Extracted 5 observations from 263796f5-339b-4c92-9413-5ec08d79310f.jsonl
+[daemon] Processing /Users/cole/.openclaw/agents/main/sessions/28b2679a-5d57-43e3-bca6-bd6cd98fb7b1.jsonl from offset 0 (1549618 new bytes)
+[staging] Wrote /Users/cole/projects/cortex/observer/staging/2026-02-15-9551d7d5.md
+[staging] Wrote /Users/cole/projects/cortex/observer/staging/2026-02-15-bcb2ba6f.md
+[staging] Wrote /Users/cole/projects/cortex/observer/staging/2026-02-15-1d17c60e.md
+[staging] Wrote /Users/cole/projects/cortex/observer/staging/2026-02-15-45e6d694.md
+[staging] Wrote /Users/cole/projects/cortex/observer/staging/2026-02-15-cb6017a5.md
+[staging] Wrote /Users/cole/projects/cortex/observer/staging/2026-02-15-fe5c3653.md
+[staging] Wrote /Users/cole/projects/cortex/observer/staging/2026-02-15-ceaf0842.md
+[staging] Wrote /Users/cole/projects/cortex/observer/staging/2026-02-15-e8f3dea7.md
+[staging] Wrote /Users/cole/projects/cortex/observer/staging/2026-02-15-0d9660d9.md
+[staging] Wrote /Users/cole/projects/cortex/observer/staging/2026-02-15-1eb6d7d8.md
+[staging] Wrote /Users/cole/projects/cortex/observer/staging/2026-02-15-f51aa6cd.md
+[staging] Wrote /Users/cole/projects/cortex/observer/staging/2026-02-15-921262a9.md
+[staging] Wrote /Users/cole/projects/cortex/observer/staging/2026-02-15-52e9e439.md
+[staging] Wrote /Users/cole/projects/cortex/observer/staging/2026-02-15-3deec9ab.md
+[staging] Wrote /Users/cole/projects/cortex/observer/staging/2026-02-15-d30cef32.md
+[staging] Wrote /Users/cole/projects/cortex/observer/staging/2026-02-15-df93189d.md
+[staging] Wrote /Users/cole/projects/cortex/observer/staging/2026-02-15-41487589.md
+[staging] Wrote /Users/cole/projects/cortex/observer/staging/2026-02-15-c94389cb.md
+[promoter] Promoted 2026-02-15-0d9660d9.md
+[promoter] Promoted 2026-02-15-1d17c60e.md
+[promoter] Promoted 2026-02-15-1eb6d7d8.md
+[promoter] Promoted 2026-02-15-3deec9ab.md
+[promoter] Promoted 2026-02-15-41487589.md
+[promoter] Promoted 2026-02-15-45e6d694.md
+[promoter] Promoted 2026-02-15-52e9e439.md
+[promoter] Promoted 2026-02-15-921262a9.md
+[promoter] Promoted 2026-02-15-9551d7d5.md
+[promoter] Promoted 2026-02-15-bcb2ba6f.md
+[promoter] Promoted 2026-02-15-c94389cb.md
+[promoter] Promoted 2026-02-15-cb6017a5.md
+[promoter] Promoted 2026-02-15-ceaf0842.md
+[promoter] Promoted 2026-02-15-d30cef32.md
+[promoter] Promoted 2026-02-15-df93189d.md
+[promoter] Promoted 2026-02-15-e8f3dea7.md
+[promoter] Promoted 2026-02-15-f51aa6cd.md
+[promoter] Promoted 2026-02-15-fe5c3653.md
+[daemon] Promoted 18 observations
+[daemon] Graph rebuild triggered
+[daemon] Extracted 18 observations from 28b2679a-5d57-43e3-bca6-bd6cd98fb7b1.jsonl
+[daemon] Processing /Users/cole/.openclaw/agents/main/sessions/2a0f40a7-aec6-4496-8c35-bfd7ed29c049.jsonl from offset 0 (1215895 new bytes)
