@@ -256,23 +256,44 @@ async function processFile(filePath, vaultRoot, vaultName) {
     edges.push({ source: docId, target: personId, type: 'authored_by' });
   }
 
-  // Tags → tag nodes + tagged edges
+  // Tags → tag nodes + tagged edges (project/* tags become project nodes)
   for (const tag of tags) {
     const tagNorm = normalizeId(tag);
-    const tagId = nodeId('tag', tagNorm);
-    if (!nodes.has(tagId)) {
-      nodes.set(tagId, {
-        id: tagId,
-        type: 'tag',
-        vault: vaultName,
-        label: tag,
-        aliases: [],
-        tags: [],
-        created: '',
-        mentions: 1,
-      });
+    if (tag.startsWith('project/')) {
+      const projName = tag.slice(8);
+      const projNorm = normalizeId(projName);
+      const projId = nodeId('project', projNorm);
+      if (!nodes.has(projId)) {
+        nodes.set(projId, {
+          id: projId,
+          type: 'project',
+          vault: vaultName,
+          label: projName,
+          aliases: [],
+          tags: [],
+          created: '',
+          mentions: 1,
+        });
+      } else {
+        nodes.get(projId).mentions++;
+      }
+      edges.push({ source: docId, target: projId, type: 'about' });
+    } else {
+      const tagId = nodeId('tag', tagNorm);
+      if (!nodes.has(tagId)) {
+        nodes.set(tagId, {
+          id: tagId,
+          type: 'tag',
+          vault: vaultName,
+          label: tag,
+          aliases: [],
+          tags: [],
+          created: '',
+          mentions: 1,
+        });
+      }
+      edges.push({ source: docId, target: tagId, type: 'tagged' });
     }
-    edges.push({ source: docId, target: tagId, type: 'tagged' });
   }
 
   // Project from frontmatter
