@@ -1,11 +1,13 @@
 import { readFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { checkAuth } from './_auth.js';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 const vaultRoot = resolve(join(__dirname, '..', 'vault'));
 
 export default async function handler(req, res) {
+  if (!checkAuth(req, res)) return;
   const { path } = req.query;
   if (!path) return res.status(400).json({ error: 'Missing path param' });
 
