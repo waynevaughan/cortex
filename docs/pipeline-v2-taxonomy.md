@@ -1,6 +1,14 @@
-# Observation Pipeline — Issues & Fixes
+# Cortex Knowledge Graph — Taxonomy & Ontology Design
 
-Working document. Built by analyzing the raw output of the first pipeline run (1,085 observations from 66 sessions). Each section corresponds to an observation type we reviewed. Decisions accumulate here as we work through the data.
+This document defines the complete type taxonomy for Cortex's knowledge graph. It began as a pipeline review — analyzing the raw output of the first extraction run (1,085 observations from 66 sessions) — and evolved into something more fundamental: a rigorous, first-principles definition of every observation type, the knowledge graph split between agent mind and human-facing data, and the realization that observation types *are* graph node types.
+
+**What's in this document:**
+1. **Pipeline analysis** — Issues found in the first run, with fixes (the original purpose)
+2. **The knowledge graph split** — Agent's mind vs. the human's computer
+3. **The full type taxonomy** — 18 observation types (11 cognitive, 7 operational), each with rigorous definitions, distinguishing criteria, and examples
+4. **Ontology implications** — These types are both pipeline classification labels and knowledge graph node types
+
+**Origin:** Built iteratively through dialogue between Wayne and Cole, starting from data analysis and ending at first-principles epistemology. The taxonomy section is the most significant output — it defines what Cortex knows and how it's organized.
 
 ---
 
