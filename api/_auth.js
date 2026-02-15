@@ -4,10 +4,10 @@
  * Returns true if authorized, false if not (and sends 401).
  */
 export function checkAuth(req, res) {
-  const password = process.env.CORTEX_PASSWORD;
+  const password = process.env.CORTEX_PASSWORD?.trim();
   if (!password) return true; // No password set = open (local dev)
 
-  const auth = req.headers.authorization;
+  const auth = req.headers.authorization?.trim();
   if (!auth || auth !== `Bearer ${password}`) {
     res.status(401).json({ error: 'Unauthorized' });
     return false;
