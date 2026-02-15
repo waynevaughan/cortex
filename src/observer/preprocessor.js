@@ -78,7 +78,7 @@ function stripImages(content) {
 function summarizeToolCalls(content) {
   if (!Array.isArray(content)) return content;
   return content.map(block => {
-    if (block.type === 'tool_use') {
+    if (block.type === 'tool_use' || block.type === 'toolCall') {
       const name = block.name || 'unknown_tool';
       const inputSummary = block.input
         ? Object.keys(block.input).join(', ')
@@ -109,7 +109,7 @@ function summarizeToolCalls(content) {
 function contentToText(content) {
   if (typeof content === 'string') return content;
   if (!Array.isArray(content)) return JSON.stringify(content);
-  return content.map(b => b.text || '').join('\n');
+  return content.map(b => b.text || b.thinking || '').filter(Boolean).join('\n');
 }
 
 /**
@@ -122,15 +122,21 @@ export function preprocessTranscript(jsonlContent) {
   const messages = [];
 
   for (const line of lines) {
-    let msg;
+    let entry;
     try {
-      msg = JSON.parse(line);
+      entry = JSON.parse(line);
     } catch {
       continue; // skip malformed lines
     }
 
+    // OpenClaw transcript format: {type: "message", message: {role, content}, timestamp}
+    // Also support flat format: {role, content, timestamp}
+    const msg = entry.message || entry;
+    if (!msg.role && entry.type !== 'message') continue; // skip non-message events (session, model_change, etc.)
+    if (!msg.content) continue; // skip entries without content
+
     let content = msg.content;
-    // Stage 1a: Summarize tool calls
+    // Stage 1a: Summarize tool calls (handle both tool_use/tool_result and toolCall formats)
     content = summarizeToolCalls(content);
     // Stage 1b: Strip images
     content = stripImages(content);
@@ -139,11 +145,14 @@ export function preprocessTranscript(jsonlContent) {
     // Stage 1c: Scrub credentials
     text = scrubCredentials(text);
 
+    // Skip empty messages
+    if (!text.trim()) continue;
+
     messages.push({
-      timestamp: msg.timestamp || 0,
+      timestamp: entry.timestamp || msg.timestamp || 0,
       role: msg.role || 'unknown',
       text,
-      __openclaw: msg.__openclaw,
+      __openclaw: entry.__openclaw || msg.__openclaw,
     });
   }
 
