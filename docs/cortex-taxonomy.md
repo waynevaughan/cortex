@@ -8,6 +8,8 @@ This document defines the complete type taxonomy for the Cortex knowledge graph.
 
 **Origin:** Built iteratively through dialogue between Wayne and Cole. Started from analysis of the first pipeline run (1,085 observations from 66 sessions — see [Pipeline Analysis](pipeline-analysis.md)) and evolved into first-principles epistemology. The taxonomy defines what Cortex knows and how it's organized.
 
+**Applies to:** v0.1.0
+
 ---
 
 ## Design Principle: Type-Specific Quality Gates

@@ -4,6 +4,8 @@ Analysis of the first pipeline extraction run (1,085 observations from 66 sessio
 
 This analysis informed the development of the [Cortex Knowledge Graph Taxonomy & Ontology](cortex-taxonomy.md), which defines the complete type system that emerged from this review.
 
+**Applies to:** v0.1.0
+
 ---
 
 ## Analysis: Decisions (256 observations)
