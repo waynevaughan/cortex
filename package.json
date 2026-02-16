@@ -1,0 +1,10 @@
+{
+  "name": "cortex-explorer",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Cortex Knowledge Graph Explorer",
+  "scripts": {
+    "dev": "node explorer/server.js",
+    "build": "node src/graph/cli.js build vault"
+  }
+}
