@@ -6,9 +6,11 @@ This document defines the complete type taxonomy for the Cortex knowledge graph.
 2. **The full type taxonomy** — 18 observation types (11 cognitive, 7 operational), each with rigorous first-principles definitions, distinguishing criteria, and examples
 3. **Ontology implications** — These observation types are also the node types in the knowledge graph
 
-**Origin:** Built iteratively through dialogue between Wayne and Cole. Started from analysis of the first pipeline run (1,085 observations from 66 sessions — see [Pipeline Analysis](pipeline-analysis.md)) and evolved into first-principles epistemology. The taxonomy defines what Cortex knows and how it's organized.
+**Origin:** Built iteratively through dialogue between Wayne and Cole. Started from analysis of early observation data and evolved into first-principles epistemology. The taxonomy defines what Cortex knows and how it's organized.
 
-**Applies to:** v0.1.0
+**How it's used:** The agent applies this taxonomy at write time via the `cortex_observe` skill. When the agent identifies an observation during conversation, it classifies it into one of the 18 types below before writing to `observer/observations.jsonl`. The daemon validates the type is one of the 18 defined types but does not reclassify.
+
+**Applies to:** v0.2.0 (agent-as-extractor architecture)
 
 ---
 
@@ -16,17 +18,15 @@ This document defines the complete type taxonomy for the Cortex knowledge graph.
 
 **Observation from Wayne:** Determining whether an observation is important, useful, and worthy of committing to the vault is *specific to the type of observation*. The criteria for a good decision is different from the criteria for a good preference, which is different from a good fact.
 
-**Implication:** The pipeline should not use a single universal quality gate. Each observation type needs its own:
-- **Extraction criteria** — what makes this type worth extracting?
+**Implication:** The agent should not use a single universal quality gate. Each observation type has its own:
+- **Write criteria** — what makes this type worth writing?
 - **Quality bar** — what separates a vault-worthy observation from noise?
-- **Dedup strategy** — how do duplicates manifest for this type?
-- **Usefulness test** — how would an agent use this type of observation?
+- **Dedup profile** — how do duplicates manifest for this type?
+- **Usefulness test** — how would an agent use this type of observation in a future session?
 
-This adds complexity to the pipeline (type-specific evaluation logic instead of one-size-fits-all scoring), but should produce significantly better results. A preference that says "Wayne hates corporate filler" has a completely different quality profile than a decision that says "We chose Postgres over MongoDB."
+The agent applies type-specific judgment at write time — it has conversational context to distinguish a strategic decision from an implementation detail. The daemon then applies mechanical scoring adjustments and deduplication.
 
-**Where this fits in the pipeline:** After extraction and type classification, observations should route through type-specific evaluation before scoring. The current pipeline applies the same confidence/importance formula to everything — that's likely why implementation-detail decisions score similarly to strategic ones.
-
-We'll define the specific criteria for each type as we analyze them below.
+We define the specific criteria for each type below.
 
 ---
 
