@@ -3,12 +3,12 @@
 This document defines the complete type taxonomy for the Cortex knowledge graph. It contains:
 
 1. **The knowledge graph split** — The agent's mind vs. the human's computer
-2. **The full type taxonomy** — 18 observation types (11 cognitive, 7 operational), each with rigorous first-principles definitions, distinguishing criteria, and examples
+2. **The full type taxonomy** — 17 types across 3 categories (concept/entity/relation), each with rigorous first-principles definitions, distinguishing criteria, and examples
 3. **Ontology implications** — These observation types are also the node types in the knowledge graph
 
 **Origin:** Built iteratively through dialogue between Wayne and Cole. Started from analysis of early observation data and evolved into first-principles epistemology. The taxonomy defines what Cortex knows and how it's organized.
 
-**How it's used:** The agent applies this taxonomy at write time via the `cortex_observe` skill. When the agent identifies an observation during conversation, it classifies it into one of the 18 types below before writing to `observer/observations.jsonl`. The daemon validates the type is one of the 18 defined types but does not reclassify.
+**How it's used:** The agent applies this taxonomy at write time via the `cortex_observe` skill. When the agent identifies an observation during conversation, it classifies it into one of the 17 types below before writing to `observer/observations.jsonl`. The daemon validates the type against the default taxonomy plus any custom types defined in `observer/taxonomy.yml`. `observation` is a staging state for unclassified input, not a final type — it must resolve to a typed category or be pruned.
 
 **Applies to:** v0.2.0 (agent-as-extractor architecture)
 
@@ -52,7 +52,7 @@ The same information can live in both. "Cortex uses SQLite" might be in the agen
 
 - **Human-facing knowledge** is retrieved *explicitly* — searched when doing work, queried by tools, rendered for humans through familiar interfaces. The format needs to be human-readable. The quality bar is "is this accurate, current, and organized so a human can find it?"
 
-The 18 observation types serve as a routing guide. Cognitive types (fact, opinion, belief, preference, lesson, decision, commitment, observation, goals, aspiration) route predominantly to the **agent's mind** — they shape how the agent thinks and operates. Operational types (constraint, project, milestone, task, resource, event, dependency) often appear in **both** — the agent needs them for work, and humans need visibility into them.
+The 17 observation types serve as a routing guide. Concept types (fact, opinion, belief, preference, lesson, decision, commitment, goal_short, goal_long, aspiration, constraint) route predominantly to the **agent's mind** — they shape how the agent thinks and operates. Entity types (milestone, task, resource, event) and Relation types (project, dependency) often appear in **both** — the agent needs them for work, and humans need visibility into them.
 
 **Key insight:** A single observation can produce both. "We chose Postgres over MongoDB because Wayne values simplicity and local-first" contains agent knowledge (Wayne values simplicity — shapes future decisions) and human-facing knowledge (the project uses Postgres — belongs in the architecture doc). One extraction, two destinations.
 
@@ -64,15 +64,17 @@ The 18 observation types serve as a routing guide. Cognitive types (fact, opinio
 
 ## Observation Type Definitions (Agent Prompt Format)
 
-Observation types are organized into two groups:
+Observation types are organized into three categories:
 
-**Cognitive Observation Types** — products of intelligent entities. These require an intelligent entity to exist. They describe how intelligent entities model reality, form judgments, hold convictions, want things, learn from experience, commit to choices, and direct toward future states. Eleven types: fact, opinion, belief, preference, lesson, decision, commitment, observation (general), goal (short-term), goal (long-term), aspiration.
+**Concept (12 types)** — ideas the agent holds. These are products of intelligent entities and describe how they model reality, form judgments, hold convictions, want things, learn from experience, commit to choices, and direct toward future states. Types: fact, opinion, belief, preference, lesson, decision, commitment, goal_short, goal_long, aspiration, constraint.
 
-**Operational Observation Types** — practical structures and boundaries for organizing and constraining work. These are not products of minds, though minds recognize and create them. They describe how work is organized, tracked, and bounded. Types: constraint, and others to be defined (project, milestone, task, relationship under discussion).
+**Entity (4 types)** — things in the world. These are concrete objects, resources, and occurrences that can be tracked and managed. Types: milestone, task, event, resource.
 
-Each cognitive type follows the same structure: definition, three parts, what it's NOT, quick test, examples.
+**Relation (2 types)** — connections between things. These describe how entities relate to and depend on each other. Types: project, dependency.
 
-Eleven cognitive types: fact, opinion, belief, preference, lesson, decision, commitment, observation (general), goal (short-term), goal (long-term), aspiration.
+**Staging state:** `observation` is not a final type — it is a lifecycle staging state for unclassified input. Observations in this state must resolve to one of the 17 typed categories or be pruned. Analogous to a sensory buffer in neuroscience.
+
+Each type follows the same structure: definition, three parts, what it's NOT, quick test, examples.
 
 ---
 
@@ -250,31 +252,6 @@ Examples:
 
 ---
 
-### observation (general)
-
-A general observation is an insight or pattern noticed by an intelligent entity that doesn't fit cleanly into the other 10 cognitive types.
-
-Three parts:
-- **Insight or pattern** — it captures something worth remembering that emerged from experience or analysis.
-- **Doesn't fit other types** — it's not clearly a fact, opinion, belief, preference, lesson, decision, commitment, or goal. Use this as a catch-all only when no specific type applies.
-- **Still passes the write gate** — it must change how an agent acts in the future. General observations are not a dumping ground for noise.
-
-What an observation is NOT:
-- Not a fact (facts describe discrete state — observations capture patterns or insights)
-- Not a lesson (lessons have a direct, predictable behavioral change — observations are less specific)
-- Not an opinion (opinions are evaluative judgments with attribution and evidence — observations are more general)
-
-Quick test: "I noticed X" — where X is worth remembering but doesn't fit a more specific type.
-
-Examples:
-- ✅ "Wayne's communication style shifts to shorter sentences when he's losing patience."
-- ✅ "Sessions that start with a clear task tend to produce better observations."
-- ✅ "The team consistently underestimates integration work."
-
----
-
----
-
 ### goal (short-term)
 
 A short-term goal is a desired future state held by an intelligent entity, with a near time horizon, that is concrete, measurable, and directly actionable.
@@ -354,19 +331,19 @@ Examples:
 
 ---
 
-## Operational Observation Types
+## Concept Types (continued)
 
-### Why constraints are operational, not cognitive
+### Why constraints are concepts, not entities
 
-Constraints are practical boundaries that restrict action. They can originate from:
+Constraints are ideas the agent holds about boundaries that restrict action. They can originate from:
 - **Reality** — physical laws, resource limitations, time ("The API rate limit is 1 req/sec")
 - **Legal/social systems** — laws, regulations, platform rules ("A 10-year-old cannot legally drive")
 - **Decisions** — choices that create boundaries ("We chose local-first → can't use cloud for core functionality")
 - **People** — imposed limits ("API costs must stay under $500/month")
 
-What looks like a "cognitive constraint" is either a **practical constraint** (a real limitation of cognitive capacity — which is a fact) or a **belief** (a conviction about one's own limitations that may or may not be accurate). "I can't learn calculus because I'm not smart enough" is a belief, not a constraint. Remove the belief and the constraint disappears. "I can't focus for more than 20 minutes due to ADHD" is a practical constraint — a real property of the mind.
+What looks like a "self-imposed constraint" is either a **practical constraint** (a real limitation — which is a fact) or a **belief** (a conviction about one's own limitations that may or may not be accurate). "I can't learn calculus because I'm not smart enough" is a belief, not a constraint. Remove the belief and the constraint disappears. "I can't focus for more than 20 minutes due to ADHD" is a practical constraint — a real property that must be worked within.
 
-Constraints are about the world, not about minds. Though minds recognize and respond to them, constraints don't require a mind to hold them. This makes them operational, not cognitive.
+Constraints are ideas the agent holds about boundaries — they shape how the agent plans and acts. This makes them concepts, part of how the agent models the world.
 
 ### constraint
 
@@ -392,6 +369,8 @@ Examples:
 
 ---
 
+## Relation Types
+
 ### project
 
 A project is an organization of ideas, work, and resources in the pursuit of a defined set of goals.
@@ -415,6 +394,8 @@ Examples:
 - ✅ "SigmaRead — building an AI-powered reading comprehension tool for students."
 
 ---
+
+## Entity Types
 
 ### milestone
 
@@ -576,7 +557,7 @@ Examples:
 - If the suggestion is rejected or ignored, there's nothing to extract
 - If the suggestion surfaces a consideration worth tracking ("We should consider X"), it might produce a **task** ("Evaluate X") or a **risk** ("Not considering X could cause Y")
 
-The taxonomy stays at 18 types because suggestions don't represent a distinct cognitive or operational structure — they represent *how* cognitive structures (decisions, tasks, risks) come into being through conversation.
+Suggestions don't represent a distinct type structure — they represent *how* typed structures (decisions, tasks, risks) come into being through conversation.
 
 ---
 
@@ -594,7 +575,7 @@ This distinction matters for the pipeline: the extractor identifies observation 
 
 ## Open Questions (to address during structured discussion)
 
-0. ~~**Are observation types more than observation types? Are they also node types in the knowledge graph?**~~ **RESOLVED: Yes.** The 18 observation types are both pipeline classification labels and knowledge graph node types. The taxonomy is the ontology.
+0. ~~**Are observation types more than observation types? Are they also node types in the knowledge graph?**~~ **RESOLVED: Yes.** The 17 observation types are both pipeline classification labels and knowledge graph node types. The taxonomy is the ontology. (`observation` is a staging state, not a type.)
 
 0. **Relationships are not an observation type — they are graph structure.** The pipeline extracts facts; the graph and consolidation process handle relationship discovery and strengthening. See Q7 in `vault-consolidation-design.md`.
 
