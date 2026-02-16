@@ -600,6 +600,6 @@ This distinction matters for the pipeline: the extractor identifies observation 
 
 1. Should entity tags have confidence weights for how strongly the observation correlates with the tag?
 2. What is the exact definition of confidence vs. importance?
-3. How exactly are confidence and importance calculated? (Current: base 0.5/0.3 + signal modifiers. Is this right?)
+3. How exactly are confidence and importance calculated? (Resolved: bucket-based defaults — explicit c=0.9/i=0.5, ambient c=0.7/i=0.5. Calibration rules can adjust. See observer.md.)
 4. How does Cortex know how to filter for "what changes future behavior"?
 5. What criteria predicts "would an agent actually search for this?"
