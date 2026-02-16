@@ -66,13 +66,13 @@ The 18 observation types serve as a routing guide. Cognitive types (fact, opinio
 
 Observation types are organized into two groups:
 
-**Cognitive Observation Types** — products of intelligent entities. These require an intelligent entity to exist. They describe how intelligent entities model reality, form judgments, hold convictions, want things, learn from experience, commit to choices, and direct toward future states. Eleven types: fact, opinion, belief, preference, lesson, decision, commitment, risk, goal (short-term), goal (long-term), aspiration.
+**Cognitive Observation Types** — products of intelligent entities. These require an intelligent entity to exist. They describe how intelligent entities model reality, form judgments, hold convictions, want things, learn from experience, commit to choices, and direct toward future states. Eleven types: fact, opinion, belief, preference, lesson, decision, commitment, observation (general), goal (short-term), goal (long-term), aspiration.
 
 **Operational Observation Types** — practical structures and boundaries for organizing and constraining work. These are not products of minds, though minds recognize and create them. They describe how work is organized, tracked, and bounded. Types: constraint, and others to be defined (project, milestone, task, relationship under discussion).
 
 Each cognitive type follows the same structure: definition, three parts, what it's NOT, quick test, examples.
 
-Eleven cognitive types: fact, opinion, belief, preference, lesson, decision, commitment, risk, goal (short-term), goal (long-term), aspiration.
+Eleven cognitive types: fact, opinion, belief, preference, lesson, decision, commitment, observation (general), goal (short-term), goal (long-term), aspiration.
 
 ---
 
