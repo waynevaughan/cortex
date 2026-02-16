@@ -16,13 +16,17 @@ const MAX_OBSERVATIONS = 20;
 export function parse(raw) {
   const errors = [];
 
+  // Strip markdown code fences if present
+  let cleaned = raw.trim();
+  cleaned = cleaned.replace(/^```(?:json)?\s*\n?/i, '').replace(/\n?```\s*$/i, '');
+
   // Try to extract JSON array from response
   let parsed;
   try {
-    parsed = JSON.parse(raw.trim());
+    parsed = JSON.parse(cleaned.trim());
   } catch {
-    // Try to find JSON array in the response
-    const match = raw.match(/\[[\s\S]*\]/);
+    // Try to find JSON array in the response (greedy)
+    const match = cleaned.match(/\[[\s\S]*\]/);
     if (match) {
       try {
         parsed = JSON.parse(match[0]);
@@ -31,6 +35,10 @@ export function parse(raw) {
         return { observations: [], errors };
       }
     } else {
+      // Empty array is valid — model may have found nothing worth extracting
+      if (cleaned.includes('[]') || cleaned.trim() === '') {
+        return { observations: [], errors };
+      }
       errors.push('No JSON array found in LLM response');
       return { observations: [], errors };
     }
