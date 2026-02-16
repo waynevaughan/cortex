@@ -52,7 +52,7 @@ The same information can live in both. "Cortex uses SQLite" might be in the agen
 
 - **Human-facing knowledge** is retrieved *explicitly* — searched when doing work, queried by tools, rendered for humans through familiar interfaces. The format needs to be human-readable. The quality bar is "is this accurate, current, and organized so a human can find it?"
 
-The 18 observation types serve as a routing guide. Cognitive types (fact, opinion, belief, preference, lesson, decision, commitment, risk, goals, aspiration) route predominantly to the **agent's mind** — they shape how the agent thinks and operates. Operational types (constraint, project, milestone, task, resource, event, dependency) often appear in **both** — the agent needs them for work, and humans need visibility into them.
+The 18 observation types serve as a routing guide. Cognitive types (fact, opinion, belief, preference, lesson, decision, commitment, observation, goals, aspiration) route predominantly to the **agent's mind** — they shape how the agent thinks and operates. Operational types (constraint, project, milestone, task, resource, event, dependency) often appear in **both** — the agent needs them for work, and humans need visibility into them.
 
 **Key insight:** A single observation can produce both. "We chose Postgres over MongoDB because Wayne values simplicity and local-first" contains agent knowledge (Wayne values simplicity — shapes future decisions) and human-facing knowledge (the project uses Postgres — belongs in the architecture doc). One extraction, two destinations.
 
@@ -250,26 +250,26 @@ Examples:
 
 ---
 
-### risk
+### observation (general)
 
-A risk is an opinion about the severity and likelihood of a failure mode.
+A general observation is an insight or pattern noticed by an intelligent entity that doesn't fit cleanly into the other 10 cognitive types.
 
 Three parts:
-- **Opinion** — it is an evaluative judgment by an identified entity. It requires attribution. Different entities may assess the same failure mode differently.
-- **Severity** — how bad the consequences would be if the failure mode occurs.
-- **Likelihood** — how probable it is that the failure mode occurs.
+- **Insight or pattern** — it captures something worth remembering that emerged from experience or analysis.
+- **Doesn't fit other types** — it's not clearly a fact, opinion, belief, preference, lesson, decision, commitment, or goal. Use this as a catch-all only when no specific type applies.
+- **Still passes the write gate** — it must change how an agent acts in the future. General observations are not a dumping ground for noise.
 
-What a risk is NOT:
-- Not a fact (facts describe current state — risks evaluate potential failure)
-- Not a constraint (constraints are current boundaries — risks are potential future problems)
-- Not a lesson (lessons are learned from past experience — risks are about what hasn't happened yet)
+What an observation is NOT:
+- Not a fact (facts describe discrete state — observations capture patterns or insights)
+- Not a lesson (lessons have a direct, predictable behavioral change — observations are less specific)
+- Not an opinion (opinions are evaluative judgments with attribution and evidence — observations are more general)
 
-Quick test: "X believes there is a [likelihood] chance of [failure mode] with [severity] consequences."
+Quick test: "I noticed X" — where X is worth remembering but doesn't fit a more specific type.
 
 Examples:
-- ✅ "Cole assesses high likelihood that the vault becomes unusable without dedup, with severe impact on all downstream systems."
-- ✅ "Wayne's doctor identifies elevated risk of heart disease — moderate likelihood, high severity."
-- ✅ "Analytic tool flags 15% probability of structural failure within 1000 flight hours — catastrophic severity."
+- ✅ "Wayne's communication style shifts to shorter sentences when he's losing patience."
+- ✅ "Sessions that start with a clear task tend to produce better observations."
+- ✅ "The team consistently underestimates integration work."
 
 ---
 
