@@ -1,5 +1,5 @@
 /**
- * Stage 7: Promotion
+ * Stage 7: Memorization
  *
  * Batch-copies staged observations to vault, then does a single
  * git add + commit + push. No more per-file commits.
@@ -36,7 +36,7 @@ function isDirty(cwd) {
 }
 
 /**
- * Promote a single staging file to the vault (no git, just copy).
+ * Memorize a single staging file to the vault (no git, just copy).
  * @param {string} stagingFile - Path to staging file
  * @param {string} vaultDir - Vault root directory
  * @param {string} [obsSubdir='observations'] - Subdirectory for observations
@@ -55,29 +55,29 @@ async function copyToVault(stagingFile, vaultDir, obsSubdir = 'observations') {
     const title = titleMatch?.[1] || filename;
     return { filename, title };
   } catch (err) {
-    console.error(`[promoter] Failed to copy ${filename}: ${err.message}`);
+    console.error(`[memorizer] Failed to copy ${filename}: ${err.message}`);
     return null;
   }
 }
 
 /**
- * Promote all staging files to the vault in a single batch commit.
+ * Memorize all staging files to the vault in a single batch commit.
  * @param {string} stagingDir
  * @param {string} vaultDir
- * @returns {Promise<{ promoted: string[], failed: string[] }>}
+ * @returns {Promise<{ memorized: string[], failed: string[] }>}
  */
-export async function promoteAll(stagingDir, vaultDir) {
-  const promoted = [];
+export async function memorizeAll(stagingDir, vaultDir) {
+  const memorized = [];
   const failed = [];
 
   let files;
   try {
     files = (await readdir(stagingDir)).filter(f => f.endsWith('.md'));
   } catch {
-    return { promoted, failed };
+    return { memorized, failed };
   }
 
-  if (files.length === 0) return { promoted, failed };
+  if (files.length === 0) return { memorized, failed };
 
   // Step 1: Copy all files to vault
   const copied = [];
@@ -91,14 +91,14 @@ export async function promoteAll(stagingDir, vaultDir) {
     }
   }
 
-  if (copied.length === 0) return { promoted, failed };
+  if (copied.length === 0) return { memorized, failed };
 
   // Step 2: Single git operation — stash, pull, add, commit, push
   try {
     // Stash any dirty state (daemon logs, etc.)
     const dirty = isDirty(vaultDir);
     if (dirty) {
-      try { git('stash push -m "observer-pre-promote"', vaultDir); } catch { /* ignore */ }
+      try { git('stash push -m "observer-pre-memorize"', vaultDir); } catch { /* ignore */ }
     }
 
     // Pull latest
@@ -142,14 +142,14 @@ export async function promoteAll(stagingDir, vaultDir) {
     for (const { filepath, filename } of copied) {
       try {
         await cleanupStaged(filepath);
-        promoted.push(filename);
-        console.log(`[promoter] Promoted ${filename}`);
+        memorized.push(filename);
+        console.log(`[memorizer] Memorized ${filename}`);
       } catch {
-        promoted.push(filename); // File is in vault even if cleanup fails
+        memorized.push(filename); // File is in vault even if cleanup fails
       }
     }
   } catch (err) {
-    console.error(`[promoter] Batch commit failed: ${err.message}`);
+    console.error(`[memorizer] Batch commit failed: ${err.message}`);
     // Files are copied to vault but not committed — they'll be picked up next time
     for (const { filename } of copied) {
       failed.push(filename);
@@ -158,14 +158,18 @@ export async function promoteAll(stagingDir, vaultDir) {
     try { git('rebase --abort', vaultDir); } catch { /* ignore */ }
   }
 
-  return { promoted, failed };
+  return { memorized, failed };
 }
 
-// Keep for backward compat but prefer promoteAll
-export async function promoteOne(stagingFile, vaultDir, obsSubdir = 'observations') {
-  const result = await promoteAll(
+// Keep for backward compat but prefer memorizeAll
+export async function memorizeOne(stagingFile, vaultDir, obsSubdir = 'observations') {
+  const result = await memorizeAll(
     join(stagingFile, '..'),
     vaultDir,
   );
-  return result.promoted.length > 0;
+  return result.memorized.length > 0;
 }
+
+// Legacy aliases
+export const promoteAll = memorizeAll;
+export const promoteOne = memorizeOne;

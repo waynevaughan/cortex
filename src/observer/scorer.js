@@ -2,14 +2,14 @@
  * Stage 4: Scoring
  *
  * Validates and clamps scores, optional calibration pass,
- * applies promotion threshold.
+ * applies memorization threshold.
  */
 
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { createHash } from 'node:crypto';
 
-const PROMOTION_THRESHOLD = 0.5;
+const MEMORIZATION_THRESHOLD = 0.5;
 
 /**
  * Clamp a value to [0.0, 1.0].
@@ -36,21 +36,21 @@ export function validateScores(observations) {
 }
 
 /**
- * Apply promotion threshold — discard observations below importance 0.5.
+ * Apply memorization threshold — discard observations below importance 0.5.
  * @param {Array<Object>} observations
- * @returns {{ promoted: Array<Object>, discarded: Array<Object> }}
+ * @returns {{ memorized: Array<Object>, discarded: Array<Object> }}
  */
 export function applyThreshold(observations) {
-  const promoted = [];
+  const memorized = [];
   const discarded = [];
   for (const obs of observations) {
-    if (obs.importance < PROMOTION_THRESHOLD) {
+    if (obs.importance < MEMORIZATION_THRESHOLD) {
       discarded.push(obs);
     } else {
-      promoted.push(obs);
+      memorized.push(obs);
     }
   }
-  return { promoted, discarded };
+  return { memorized, discarded };
 }
 
 /**
@@ -133,7 +133,7 @@ export async function calibrate(observations, calibrationContent, options = {}) 
  * @param {string} [options.apiKey]
  * @param {string} [options.model]
  * @param {string} [options.lastCalibrationHash] - Previous hash for change detection
- * @returns {Promise<{ promoted: Array<Object>, discarded: Array<Object>, calibrationHash: string|null }>}
+ * @returns {Promise<{ memorized: Array<Object>, discarded: Array<Object>, calibrationHash: string|null }>}
  */
 export async function score(observations, options = {}) {
   let scored = validateScores(observations);
@@ -151,6 +151,6 @@ export async function score(observations, options = {}) {
     }
   }
 
-  const { promoted, discarded } = applyThreshold(scored);
-  return { promoted, discarded, calibrationHash };
+  const { memorized, discarded } = applyThreshold(scored);
+  return { memorized, discarded, calibrationHash };
 }

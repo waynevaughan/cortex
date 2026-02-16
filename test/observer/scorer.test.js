@@ -32,8 +32,8 @@ describe('scorer', () => {
         { importance: 0.3, title: 'Discard' },
         { importance: 0.5, title: 'Keep too' },
       ];
-      const { promoted, discarded } = applyThreshold(obs);
-      assert.equal(promoted.length, 2);
+      const { memorized, discarded } = applyThreshold(obs);
+      assert.equal(memorized.length, 2);
       assert.equal(discarded.length, 1);
       assert.equal(discarded[0].title, 'Discard');
     });

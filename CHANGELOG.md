@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Initial vault implementation with observations, private planning, research, and reviews directories
-- Observer pipeline v1 with 7-stage extraction process (session → extraction → parsing → validation → dedup → staging → promotion)
+- Observer pipeline v1 with 7-stage extraction process (session → extraction → parsing → validation → dedup → staging → memorization)
 - Basic deduplication using content hashing
 - Complete 18-type observation taxonomy covering entity definitions, interactions, decisions, process observations, technical facts, and context
 - Comprehensive documentation:

@@ -2,7 +2,7 @@
  * Stage 6: Staging
  *
  * Writes observation files to observer/staging/ with YAML frontmatter.
- * Handles cleanup after promotion and orphan detection.
+ * Handles cleanup after memorization and orphan detection.
  */
 
 import { writeFile, readdir, stat, unlink, mkdir } from 'node:fs/promises';
@@ -92,7 +92,7 @@ export async function stageAll(observations, stagingDir, sourceSession) {
 }
 
 /**
- * Remove a staging file after successful promotion.
+ * Remove a staging file after successful memorization.
  * @param {string} filepath
  */
 export async function cleanupStaged(filepath) {

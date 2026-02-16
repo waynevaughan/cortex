@@ -15,7 +15,7 @@ Cortex organizes memory into four layers, each solving a different problem:
 | **Vault** | Holds permanent shared knowledge — decisions, specs, research | Network drive |
 | **Index** | Searches across everything | Search engine |
 
-Your agent reads from all four layers. Knowledge flows upward: observations from sessions (Buffer) get saved to notes (Cache), and the best insights get promoted to permanent docs (Vault) where any agent can access them.
+Your agent reads from all four layers. Knowledge flows upward: observations from sessions (Buffer) get saved to notes (Cache), and the best insights get memorized to permanent docs (Vault) where any agent can access them.
 
 ## What's in This Repo
 

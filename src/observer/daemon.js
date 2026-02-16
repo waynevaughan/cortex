@@ -2,7 +2,7 @@
  * Cortex Observer Daemon
  *
  * Watches session transcripts via fs.watch + 30s polling fallback,
- * extracts observations through the full pipeline, and promotes to vault.
+ * extracts observations through the full pipeline, and memorizes to vault.
  *
  * Usage: node src/observer/daemon.js --transcripts <dir> --vault <dir> [--config .cortexrc] [--once]
  */
@@ -18,7 +18,7 @@ import { score } from './scorer.js';
 import { validate } from './security.js';
 import { dedup } from './dedup.js';
 import { stageAll, findOrphans } from './staging.js';
-import { promoteAll } from './promoter.js';
+import { memorizeAll } from './promoter.js';
 
 const POLL_INTERVAL = 30000; // 30 seconds
 const PID_FILENAME = 'observer.pid';
@@ -163,15 +163,15 @@ async function processFile(filepath, offset, ctx) {
       if (observations.length === 0) continue;
 
       // Stage 4: Score
-      const { promoted } = await score(observations, {
+      const { memorized } = await score(observations, {
         baseDir: ctx.baseDir,
         apiKey: ctx.apiKey,
       });
 
-      if (promoted.length === 0) continue;
+      if (memorized.length === 0) continue;
 
       // Stage 4b: Security validation
-      const { passed, rejected } = validate(promoted);
+      const { passed, rejected } = validate(memorized);
       for (const r of rejected) {
         console.warn(`[security] Rejected "${r.obs.title}": ${r.reason}`);
       }
@@ -200,16 +200,16 @@ async function processFile(filepath, offset, ctx) {
     }
   }
 
-  // Stage 7: Promote all staged
+  // Stage 7: Memorize all staged
   if (totalCount > 0) {
-    const { promoted: promotedFiles, failed } = await promoteAll(ctx.stagingDir, ctx.vaultDir);
-    if (promotedFiles.length > 0) {
-      console.log(`[daemon] Promoted ${promotedFiles.length} observations`);
+    const { memorized: memorizedFiles, failed } = await memorizeAll(ctx.stagingDir, ctx.vaultDir);
+    if (memorizedFiles.length > 0) {
+      console.log(`[daemon] Memorized ${memorizedFiles.length} observations`);
       // Stage 8: Trigger graph rebuild
       await triggerGraphRebuild(ctx.vaultDir);
     }
     if (failed.length > 0) {
-      console.warn(`[daemon] ${failed.length} promotions failed, will retry`);
+      console.warn(`[daemon] ${failed.length} memorizations failed, will retry`);
     }
   }
 
@@ -217,7 +217,7 @@ async function processFile(filepath, offset, ctx) {
 }
 
 /**
- * Trigger incremental graph rebuild after promotion.
+ * Trigger incremental graph rebuild after memorization.
  * @param {string} vaultDir
  */
 async function triggerGraphRebuild(vaultDir) {

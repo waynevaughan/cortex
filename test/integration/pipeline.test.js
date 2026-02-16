@@ -93,7 +93,7 @@ This is a test document about @Cole.
     await rm(tmpDir, { recursive: true, force: true });
   });
 
-  it('stages an observation, simulates promotion, and rebuilds graph with observation node', async () => {
+  it('stages an observation, simulates memorization, and rebuilds graph with observation node', async () => {
     // Stage an observation
     const obs = {
       type: 'decision',
@@ -110,7 +110,7 @@ This is a test document about @Cole.
     const stagedPath = await writeToStaging(obs, stagingDir, 'test-session');
     assert.ok(stagedPath.endsWith('.md'));
 
-    // Simulate promotion: copy staging file to vault/observations/
+    // Simulate memorization: copy staging file to vault/observations/
     const stagedContent = await readFile(stagedPath, 'utf8');
     const filename = stagedPath.split('/').pop();
     const destPath = join(vaultDir, 'observations', filename);

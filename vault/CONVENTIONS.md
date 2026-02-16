@@ -104,9 +104,9 @@ No wiki links (`[[double brackets]]`) — standard markdown is portable across a
 
 ## Promotion
 
-Knowledge enters Vault through deliberate promotion from Cache.
+Knowledge enters Vault through deliberate memorization from Cache.
 
-**Write gate:** "Would this change how an agent acts in the future?" If no, don't promote.
+**Write gate:** "Would this change how an agent acts in the future?" If no, don't memorize.
 
 **Refinement test:**
 1. Would a new agent or team member benefit from reading this?
@@ -115,4 +115,4 @@ Knowledge enters Vault through deliberate promotion from Cache.
 
 All three must be yes.
 
-Before promoting, search Vault for existing documents on the topic. Update rather than duplicate.
+Before memorizing, search Vault for existing documents on the topic. Update rather than duplicate.
