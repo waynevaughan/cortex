@@ -18,10 +18,10 @@ describe('staging file format compatibility', () => {
       type: 'preference',
       confidence: 0.85,
       importance: 0.70,
-      title: 'Wayne prefers simple solutions',
-      body: 'Wayne consistently asks for the simplest approach.',
+      title: 'The owner prefers simple solutions',
+      body: 'The owner consistently asks for the simplest approach.',
       entities: [
-        { name: 'Wayne', type: 'person' },
+        { name: 'owner', type: 'person' },
         { name: 'cortex', type: 'project' },
       ],
     };
@@ -32,13 +32,13 @@ describe('staging file format compatibility', () => {
     assert.equal(frontmatter.type, 'preference');
     assert.equal(frontmatter.confidence, '0.85');
     assert.equal(frontmatter.importance, '0.70');
-    assert.equal(frontmatter.title, 'Wayne prefers simple solutions');
-    assert.ok(body.includes('Wayne consistently asks'));
+    assert.equal(frontmatter.title, 'The owner prefers simple solutions');
+    assert.ok(body.includes('The owner consistently asks'));
 
     // Entities should be parsed as array of objects
     assert.ok(Array.isArray(frontmatter.entities), 'entities should be an array');
     assert.equal(frontmatter.entities.length, 2);
-    assert.equal(frontmatter.entities[0].name, 'wayne-vaughan'); // canonicalized
+    assert.equal(frontmatter.entities[0].name, 'user-alpha'); // canonicalized
     assert.equal(frontmatter.entities[0].type, 'person');
     assert.equal(frontmatter.entities[1].name, 'cortex');
     assert.equal(frontmatter.entities[1].type, 'project');
@@ -49,9 +49,9 @@ describe('entity canonicalization consistency', () => {
   it('observer entities resolve to same IDs as graph entities', () => {
     // The observer staging now uses resolveAlias from graph/entities.js
     const testCases = [
-      { raw: 'Wayne', expectedCanon: 'wayne-vaughan' },
-      { raw: 'wayne vaughan', expectedCanon: 'wayne-vaughan' },
-      { raw: '@waynevaughan', expectedCanon: 'wayne-vaughan' },
+      { raw: 'owner', expectedCanon: 'user-alpha' },
+      { raw: 'user alpha', expectedCanon: 'user-alpha' },
+      { raw: '@useralpha', expectedCanon: 'user-alpha' },
       { raw: 'Cole', expectedCanon: 'cole' },
       { raw: 'SomeNewPerson', expectedCanon: 'somenewperson' },
     ];
@@ -80,7 +80,7 @@ describe('full pipeline: staging → vault → graph', () => {
     // Create a regular vault doc for the graph to parse
     await writeFile(join(vaultDir, 'readme.md'), `---
 title: "Test Project"
-author: Wayne
+author: owner
 project: cortex
 tags: [test]
 ---
@@ -102,7 +102,7 @@ This is a test document about @Cole.
       title: 'Use ESM for all modules',
       body: 'Decided to use ESM imports exclusively.',
       entities: [
-        { name: 'Wayne', type: 'person' },
+        { name: 'owner', type: 'person' },
         { name: 'cortex', type: 'project' },
       ],
     };
@@ -138,10 +138,10 @@ This is a test document about @Cole.
     );
     assert.ok(obsEdges.length >= 1, 'Observation should have entity edges');
 
-    // Verify Wayne entity is shared between doc and observation
-    const wayneNodes = graph.nodes.filter(n => n.id === 'person:wayne-vaughan');
-    assert.equal(wayneNodes.length, 1, 'Wayne should be a single canonical node');
-    assert.ok(wayneNodes[0].mentions >= 2, 'Wayne should be mentioned by both doc and obs');
+    // Verify owner entity is shared between doc and observation
+    const ownerNodes = graph.nodes.filter(n => n.id === 'person:user-alpha');
+    assert.equal(ownerNodes.length, 1, 'Owner should be a single canonical node');
+    assert.ok(ownerNodes[0].mentions >= 2, 'Owner should be mentioned by both doc and obs');
 
     // Incremental rebuild: add another observation
     const obs2 = {
