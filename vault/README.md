@@ -1,10 +1,12 @@
 ---
-title: Cortex Vault
-author: cole
+id: 019c6a09-91fe-77a6-9cb3-ab132c78b2ac
+type: document
+category: entity
 created: 2026-02-14
-status: active
-tags: [type/guide, status/active, topic/architecture, project/cortex]
+source_hash: c6579999f11317bbe70a787435c1762c0ed77fc4c1b1c00cd86706f3c0d41006
+relates_to: []
 ---
+
 
 # Cortex Vault
 
