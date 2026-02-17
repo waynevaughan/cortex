@@ -314,6 +314,123 @@ async function cmdList(cortexDir, args) {
   }
 }
 
+// --- Query Command ---
+
+/**
+ * Search entries by keyword matching against body, title, type, and metadata.
+ * Uses the index for fast lookup, falls back to scanning files.
+ */
+async function cmdQuery(cortexDir, args) {
+  const searchTerms = args.positional.slice(1).join(' ').toLowerCase();
+  if (!searchTerms) {
+    console.error('Usage: cortex query <search terms> [--type <type>] [--partition mind|vault] [--limit <n>]');
+    process.exit(1);
+  }
+
+  const typeFilter = args.flags.type;
+  const partitionFilter = args.flags.partition;
+  const limit = parseInt(args.flags.limit || '10', 10);
+
+  // Try index first
+  const indexPath = join(cortexDir, 'index', 'entries.json');
+  let entries = [];
+
+  try {
+    entries = JSON.parse(await readFile(indexPath, 'utf8'));
+  } catch {
+    // No index — scan files directly
+    console.log('(no index found — scanning files, run sleep cycle to build index)');
+    for (const partition of ['mind', 'vault']) {
+      const dir = join(cortexDir, partition);
+      let files;
+      try {
+        files = (await readdir(dir, { recursive: true })).filter(f => f.endsWith('.md'));
+      } catch { continue; }
+      for (const file of files) {
+        try {
+          const content = await readFile(join(dir, file), 'utf8');
+          const { meta, body } = parseFrontmatter(content);
+          entries.push({ ...meta, partition, filepath: join(partition, file), _body: body });
+        } catch { /* skip */ }
+      }
+    }
+  }
+
+  // Apply filters
+  if (typeFilter) entries = entries.filter(e => e.type === typeFilter);
+  if (partitionFilter) entries = entries.filter(e => e.partition === partitionFilter);
+
+  // Score entries by keyword relevance
+  const scored = [];
+  for (const entry of entries) {
+    let body = entry._body;
+    if (!body) {
+      // Load body from file if not already loaded (index entries don't have body)
+      try {
+        const content = await readFile(join(cortexDir, entry.filepath), 'utf8');
+        const parsed = parseFrontmatter(content);
+        body = parsed.body;
+      } catch { continue; }
+    }
+
+    const searchable = `${body} ${entry.type} ${entry.category || ''} ${entry.id}`.toLowerCase();
+    const terms = searchTerms.split(/\s+/);
+    let score = 0;
+
+    for (const term of terms) {
+      // Title match (first # heading) gets highest weight
+      const titleMatch = body.match(/^#\s+(.+)/m);
+      if (titleMatch && titleMatch[1].toLowerCase().includes(term)) {
+        score += 10;
+      }
+      // Body match
+      const bodyMatches = (searchable.match(new RegExp(term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g')) || []).length;
+      score += bodyMatches;
+    }
+
+    if (score > 0) {
+      scored.push({ entry, body, score });
+    }
+  }
+
+  // Sort by score descending
+  scored.sort((a, b) => b.score - a.score);
+  const results = scored.slice(0, limit);
+
+  if (results.length === 0) {
+    console.log(`No results for "${searchTerms}"`);
+    return;
+  }
+
+  console.log(`\n${results.length} result${results.length > 1 ? 's' : ''} for "${searchTerms}":\n`);
+
+  for (const { entry, body, score } of results) {
+    const title = body.match(/^#\s+(.+)/m)?.[1] || '(untitled)';
+    const partition = entry.partition || (entry.category === 'concept' ? 'mind' : 'vault');
+    const snippet = body.replace(/^#\s+.+\n+/, '').trim().slice(0, 120).replace(/\n/g, ' ');
+
+    console.log(`  [${partition}] ${entry.type.padEnd(12)} ${title}`);
+    console.log(`  ${snippet}${snippet.length >= 120 ? '...' : ''}`);
+    console.log(`  id: ${entry.id}  score: ${score}`);
+    console.log('');
+  }
+}
+
+// --- Frontmatter parser for query (minimal) ---
+
+function parseFrontmatter(content) {
+  const match = content.match(/^---\n([\s\S]*?)\n---\n?([\s\S]*)$/);
+  if (!match) return { meta: {}, body: content };
+  const raw = match[1];
+  const body = match[2];
+  const meta = {};
+  for (const line of raw.split('\n')) {
+    const kv = line.match(/^(\w[\w_]*)\s*:\s*(.+)$/);
+    if (kv) meta[kv[1]] = kv[2].trim();
+  }
+  return { meta, body };
+}
+
 // --- Main ---
 
 async function main() {
@@ -364,6 +481,10 @@ Valid types (20):
         break;
       case 'list':
         await cmdList(cortexDir, args);
+        break;
+      case 'query':
+      case 'search':
+        await cmdQuery(cortexDir, args);
         break;
       default:
         console.error(`Error: Unknown command "${command}"`);
