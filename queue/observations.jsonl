@@ -1,0 +1,1 @@
+{"timestamp":"2026-02-17T20:00:00Z","bucket":"explicit","type":"decision","body":"Opus 4.6 must be used for all Cortex implementation builds. Sonnet is acceptable for websites and throwaway MVPs only.","attribution":"Wayne","session_id":"00000000-0000-0000-0000-000000000001","confidence":0.95,"importance":0.9}

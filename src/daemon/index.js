@@ -210,6 +210,13 @@ function processQueue() {
     return;
   }
 
+  // If file shrank (recreated/truncated), reset offset
+  if (fileSize < state.observationFileOffset) {
+    console.log('[cortex-daemon] Queue file shrank (recreated?). Resetting offset to 0.');
+    state.observationFileOffset = 0;
+    saveState();
+  }
+
   if (fileSize <= state.observationFileOffset) return;
 
   // Read from offset to EOF
