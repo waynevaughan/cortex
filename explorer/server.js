@@ -210,10 +210,16 @@ const HTML = `<!DOCTYPE html>
     --accent: #818cf8; --green: #4ade80; --amber: #fbbf24; --rose: #fb7185;
   }
   body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
-  .container { max-width: 1200px; margin: 0 auto; padding: 24px; }
-  h1 { font-size: 28px; font-weight: 700; margin-bottom: 4px; }
-  .subtitle { color: var(--muted); margin-bottom: 24px; font-size: 14px; }
+  .container { max-width: 1200px; margin: 0 auto; padding: 24px; padding-top: 72px; }
   .live-dot { display: inline-block; width: 8px; height: 8px; background: var(--green); border-radius: 50%; margin-right: 6px; animation: pulse 2s infinite; }
+  .top-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 50; background: rgba(10,15,26,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; height: 52px; }
+  .nav-left { display: flex; align-items: center; }
+  .nav-title { font-size: 18px; font-weight: 700; }
+  .nav-links { display: flex; gap: 4px; }
+  .nav-link { color: var(--muted); text-decoration: none; font-size: 14px; font-weight: 500; padding: 6px 14px; border-radius: 6px; transition: all 0.2s; }
+  .nav-link:hover { color: var(--text); background: rgba(255,255,255,0.05); }
+  .nav-link.active { color: var(--accent); background: rgba(129,140,248,0.1); }
+  .last-updated { font-size: 12px; color: var(--dim); }
   @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
   .stats { display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; }
@@ -249,8 +255,14 @@ const HTML = `<!DOCTYPE html>
 </head>
 <body>
 <div class="container">
-  <h1><span class="live-dot"></span>Cortex Explorer</h1>
-  <p class="subtitle">Live view — reading directly from mind/ and vault/ &nbsp;·&nbsp; <span class="last-updated" id="updated"></span></p>
+  <nav class="top-nav">
+    <div class="nav-left"><span class="live-dot"></span><span class="nav-title">Cortex</span></div>
+    <div class="nav-links">
+      <a href="/" class="nav-link active">Entries</a>
+      <a href="/graph" class="nav-link">Graph</a>
+    </div>
+    <span class="last-updated" id="updated"></span>
+  </nav>
 
   <div class="stats" id="stats"></div>
 
@@ -389,18 +401,19 @@ const GRAPH_HTML = `<!DOCTYPE html>
     --concept: #818cf8; --entity: #4ade80; --relation: #fbbf24; --ref: #fb7185;
   }
   body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); color: var(--text); overflow: hidden; height: 100vh; }
-  canvas { display: block; }
-  .overlay { position: fixed; top: 16px; left: 16px; z-index: 10; }
-  h1 { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
-  .subtitle { color: var(--muted); font-size: 12px; margin-bottom: 12px; }
+  canvas { display: block; margin-top: 52px; }
   .live-dot { display: inline-block; width: 8px; height: 8px; background: var(--entity); border-radius: 50%; margin-right: 6px; animation: pulse 2s infinite; }
   @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-  .legend { display: flex; gap: 16px; font-size: 12px; margin-bottom: 8px; }
+  .top-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 50; background: rgba(10,15,26,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 24px; height: 52px; gap: 24px; }
+  .nav-left { display: flex; align-items: center; }
+  .nav-title { font-size: 18px; font-weight: 700; }
+  .nav-links { display: flex; gap: 4px; }
+  .nav-link { color: var(--muted); text-decoration: none; font-size: 14px; font-weight: 500; padding: 6px 14px; border-radius: 6px; transition: all 0.2s; }
+  .nav-link:hover { color: var(--text); background: rgba(255,255,255,0.05); }
+  .nav-link.active { color: #818cf8; background: rgba(129,140,248,0.1); }
+  .legend { display: flex; gap: 12px; font-size: 11px; margin-left: auto; }
   .legend-item { display: flex; align-items: center; gap: 4px; }
-  .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
-  .nav { font-size: 13px; }
-  .nav a { color: var(--concept); text-decoration: none; }
-  .nav a:hover { text-decoration: underline; }
+  .legend-dot { width: 8px; height: 8px; border-radius: 50%; }
   .tooltip { position: fixed; background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; max-width: 350px; font-size: 13px; pointer-events: none; display: none; z-index: 20; }
   .tooltip-type { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
   .tooltip-body { color: var(--muted); line-height: 1.5; }
@@ -409,17 +422,19 @@ const GRAPH_HTML = `<!DOCTYPE html>
 </style>
 </head>
 <body>
-<div class="overlay">
-  <h1><span class="live-dot"></span>Knowledge Graph</h1>
-  <p class="subtitle">Force-directed · Auto-refreshes every 15s</p>
-  <div class="legend">
-    <div class="legend-item"><div class="legend-dot" style="background:var(--concept)"></div> Concept (Mind)</div>
-    <div class="legend-item"><div class="legend-dot" style="background:var(--entity)"></div> Entity (Vault)</div>
-    <div class="legend-item"><div class="legend-dot" style="background:var(--relation)"></div> Relation</div>
-    <div class="legend-item"><div class="legend-dot" style="background:var(--ref)"></div> Person ref</div>
+<nav class="top-nav">
+  <div class="nav-left"><span class="live-dot"></span><span class="nav-title">Cortex</span></div>
+  <div class="nav-links">
+    <a href="/" class="nav-link">Entries</a>
+    <a href="/graph" class="nav-link active">Graph</a>
   </div>
-  <div class="nav"><a href="/">← Entry list</a></div>
-</div>
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:var(--concept)"></div>Concept</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--entity)"></div>Entity</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--relation)"></div>Relation</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--ref)"></div>Person</div>
+  </div>
+</nav>
 <div class="tooltip" id="tooltip">
   <div class="tooltip-type" id="tt-type"></div>
   <div class="tooltip-body" id="tt-body"></div>
@@ -439,7 +454,7 @@ let dragStartX, dragStartY, isPanning = false;
 
 function resize() {
   W = canvas.width = window.innerWidth;
-  H = canvas.height = window.innerHeight;
+  H = canvas.height = window.innerHeight - 52;
 }
 window.addEventListener('resize', resize);
 resize();
