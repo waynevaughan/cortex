@@ -225,7 +225,7 @@ Check if `observer/calibration.yml` exists. If yes, apply matching rules.
 rules:
   - match: { type: "decision" }
     adjust: { importance: +0.1 }
-  - match: { type: "preference", source: "wayne" }
+  - match: { type: "preference", source: "owner" }
     adjust: { confidence: +0.1 }
 ```
 
@@ -607,7 +607,7 @@ Graph builder:
 [
   {
     "from": "019503a7-c18f-7b1d-a3b2-9c4f7e2d1a0b",
-    "to": "wayne-entity-id",
+    "to": "owner-entity-id",
     "type": "attributed_to"
   },
   {

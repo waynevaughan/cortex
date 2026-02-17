@@ -97,7 +97,7 @@ Quick test: "This is how things are." No evaluation, no want, no behavioral chan
 
 Examples:
 - ✅ "ExampleApp has 10 active students across 5 reading levels."
-- ✅ "The Vercel project is linked under the sigmascore scope."
+- ✅ "The Vercel project is linked under the example-org scope."
 - ✅ "OpenClaw 2026.2.9 fixes post-compaction amnesia."
 
 ---

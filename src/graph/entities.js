@@ -21,7 +21,7 @@ const KNOWN_ALIASES = {
 /**
  * Normalize a raw string into a lowercase-hyphenated identifier.
  * @param {string} raw - Raw entity name or reference
- * @returns {string} Normalized identifier (e.g., "wayne-vaughan")
+ * @returns {string} Normalized identifier (e.g., "user-alpha")
  */
 export function normalizeId(raw) {
   if (!raw || typeof raw !== 'string') return '';
@@ -38,7 +38,7 @@ export function normalizeId(raw) {
  * Build a typed node ID.
  * @param {string} type - Node type (person, project, tag, decision, document, observation)
  * @param {string} identifier - Normalized identifier
- * @returns {string} e.g., "person:wayne-vaughan"
+ * @returns {string} e.g., "person:user-alpha"
  */
 export function nodeId(type, identifier) {
   return `${type}:${identifier}`;
@@ -77,8 +77,8 @@ export function getAliases(canonicalId) {
 
 /**
  * Create a display label from a normalized identifier.
- * @param {string} id - Normalized identifier (e.g., "wayne-vaughan")
- * @returns {string} Display label (e.g., "Wayne Vaughan")
+ * @param {string} id - Normalized identifier (e.g., "user-alpha")
+ * @returns {string} Display label (e.g., "User Alpha")
  */
 export function toLabel(id) {
   if (!id) return '';
