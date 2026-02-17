@@ -425,13 +425,63 @@ Examples:
 
 ### document
 
-A document is a discrete, identifiable unit of written content — a file, spec, report, or reference material that can be retrieved and cited.
+A document is a discrete, identifiable unit of written content that exists as a persistent, retrievable artifact.
+
+Three parts:
+- **Discrete** — it has boundaries. A document is a specific file, spec, report, or reference — not a vague collection of writing. You can point to it.
+- **Persistent** — it exists beyond the conversation that created or referenced it. A chat message isn't a document. A spec committed to a repo is.
+- **Retrievable** — it can be found, opened, read, and cited. It has a location (file path, URL, repo) or at minimum a name that identifies it uniquely.
+
+Documents can be:
+- **Specs** — architecture docs, design specs, requirement documents
+- **Reports** — audits, analyses, build logs
+- **Reference material** — READMEs, guides, runbooks
+- **External** — articles, papers, blog posts referenced during work
+
+What a document is NOT:
+- Not a fact (facts describe state — documents are the artifacts that contain facts, decisions, and other knowledge)
+- Not a resource (resources are finite and consumed — documents are referenced and read, not depleted)
+- Not a task (tasks are work to be done — a document is an artifact, though a task may produce one)
+- Not an event (events are temporal occurrences — a document persists independent of time)
+
+Quick test: "Can I open this, read it, and cite it by name or path?" If yes, it's a document.
+
+Examples:
+- ✅ "The Cortex taxonomy spec at `cortex-review/docs/cortex-taxonomy.md`."
+- ✅ "The spec compliance audit report from 2026-02-17."
+- ✅ "The AGENTS.md file that defines build process rules."
+- ❌ "Wayne's message about simplification." — a chat message, not a persistent document.
 
 ---
 
 ### person
 
-A person is an individual human who appears in the agent's knowledge as a distinct entity that can be referenced, attributed to, and connected with other knowledge.
+A person is a specific, identifiable human individual who participates in or is referenced by the agent's work.
+
+Three parts:
+- **Specific** — a named individual, not a role or category. "Wayne" is a person. "The user" is not.
+- **Identifiable** — they can be distinguished from other people. They have a name, and typically have attributes (contact info, roles, relationships) that make them uniquely recognizable.
+- **Participates or is referenced** — they either actively interact with the agent, or they appear in the agent's knowledge as someone relevant to decisions, projects, or relationships.
+
+Persons have attributes:
+- **Identity** — name, handles, contact info
+- **Roles** — owner, collaborator, user, stakeholder
+- **Relationships** — to other people, to projects, to the agent itself
+- **Preferences and beliefs** — stored as separate concept entries that reference the person entity
+
+What a person is NOT:
+- Not a preference (preferences are properties of a person — the person is the entity those preferences attach to)
+- Not a role ("the product owner" is a role — "Wayne" is a person who fills that role)
+- Not a resource (people's time can be a resource, but the person themselves is an entity, not something consumed)
+
+Quick test: "Is this a specific, named human I can reference elsewhere?" If yes, it's a person.
+
+Examples:
+- ✅ "Wayne — owner, prefers autonomous execution, works 9 AM–3:30 PM CT."
+- ✅ "Calie — teacher, provides SigmaRead feedback."
+- ✅ "Morgan — sub-agent research collaborator." (Note: despite the name, Morgan is treated as a person-like entity for referencing purposes)
+- ❌ "The user" — not specific enough. Which user?
+- ❌ "Teachers who use SigmaRead" — a category, not a person.
 
 ---
 
