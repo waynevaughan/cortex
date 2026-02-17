@@ -6,7 +6,7 @@ This document defines the complete type taxonomy for the Cortex knowledge graph.
 2. **The full type taxonomy** — 17 types across 3 categories (concept/entity/relation), each with rigorous first-principles definitions, distinguishing criteria, and examples
 3. **Ontology implications** — These observation types are also the node types in the knowledge graph
 
-**Origin:** Built iteratively through dialogue between Wayne and Cole. Started from analysis of early observation data and evolved into first-principles epistemology. The taxonomy defines what Cortex knows and how it's organized.
+**Origin:** Built iteratively through dialogue between the maintainers. Started from analysis of early observation data and evolved into first-principles epistemology. The taxonomy defines what Cortex knows and how it's organized.
 
 **How it's used:** The agent applies this taxonomy at write time via the `cortex_observe` skill. When the agent identifies an observation during conversation, it classifies it into one of the 17 types below before writing to `observer/observations.jsonl`. The daemon validates the type against the default taxonomy plus any custom types defined in `observer/taxonomy.yml`. `observation` is a staging state for unclassified input, not a final type — it must resolve to a typed category or be pruned.
 
@@ -16,7 +16,7 @@ This document defines the complete type taxonomy for the Cortex knowledge graph.
 
 ## Design Principle: Type-Specific Quality Gates
 
-**Observation from Wayne:** Determining whether an observation is important, useful, and worthy of committing to the vault is *specific to the type of observation*. The criteria for a good decision is different from the criteria for a good preference, which is different from a good fact.
+**Observation from the owner:** Determining whether an observation is important, useful, and worthy of committing to the vault is *specific to the type of observation*. The criteria for a good decision is different from the criteria for a good preference, which is different from a good fact.
 
 **Implication:** The agent should not use a single universal quality gate. Each observation type has its own:
 - **Write criteria** — what makes this type worth writing?
@@ -32,29 +32,29 @@ We define the specific criteria for each type below.
 
 ## Design Principle: The Knowledge Graph Split
 
-**Observation from Wayne:** The knowledge graph should split into two fundamentally different regions, distinguished by audience and purpose:
+**Observation from the owner:** The knowledge graph should split into two fundamentally different regions, distinguished by audience and purpose:
 
 **(a) The agent's mind** — everything the agent needs to operate. This includes both memories (preferences, beliefs, lessons, interaction patterns) and structured data the agent uses to do work (project architectures, dependency maps, technical context). The agent organizes this however it sees fit. The agent decides what goes in, how it's structured, and what matters — optimized for whatever the agent believes it needs to perform its work effectively. This is not a human-curated knowledge base. It's the agent building its own cognitive infrastructure. Humans never see this directly and don't need to.
 
-Examples: "Wayne pushes back on complexity, prefers simplification." "When Wayne says 'proceed' he means stop discussing and execute." "Cortex uses SQLite — relevant for all technical decisions." "The pipeline has 18 observation types organized into cognitive and operational groups."
+Examples: "The owner pushes back on complexity, prefers simplification." "When the owner says 'proceed' they mean stop discussing and execute." "Cortex uses SQLite — relevant for all technical decisions." "The pipeline has 18 observation types organized into cognitive and operational groups."
 
 **(b) The human's computer** — well-organized information that humans can search, browse, and use. Think of it like a file system, a wiki, a project tracker. Project descriptions, architecture documents, research reports, task lists, contacts. Organized in familiar hierarchies that humans expect — files and folders, categories and tags. The organizing principle is: what does the human need to find and use?
 
-Examples: Nexus renders a task list for Wayne to review. Explorer shows the knowledge graph for humans to browse. A project spec is formatted for human reading.
+Examples: ExampleApp renders a task list for the owner to review. Explorer shows the knowledge graph for humans to browse. A project spec is formatted for human reading.
 
 **The key distinction:** The split is by **audience and purpose**, not by data type. The agent's mind is organized *by the agent, for the agent* — whatever the agent needs to do its job. The human's computer is organized for human consumption — browsable, navigable, structured in ways humans expect.
 
-The same information can live in both. "Cortex uses SQLite" might be in the agent's mind (for making technical decisions) and in the human's computer (in a project architecture doc Wayne can review). The agent's mind is a superset in some ways — it contains things humans would never care about ("Wayne gets frustrated when I over-explain") alongside things humans do care about (project specs).
+The same information can live in both. "Cortex uses SQLite" might be in the agent's mind (for making technical decisions) and in the human's computer (in a project architecture doc the owner can review). The agent's mind is a superset in some ways — it contains things humans would never care about ("The owner gets frustrated when I over-explain") alongside things humans do care about (project specs).
 
 **How observation types route into this:**
 
-- **Memories and agent-facing knowledge** are retrieved *implicitly* — loaded at session start, used to shape tone, approach, and decision-making. The agent doesn't search for "does Wayne like bullet points?" — it just *knows*. The format optimizes for LLM absorption. The quality bar is "does this make me a better agent?"
+- **Memories and agent-facing knowledge** are retrieved *implicitly* — loaded at session start, used to shape tone, approach, and decision-making. The agent doesn't search for "does the owner like bullet points?" — it just *knows*. The format optimizes for LLM absorption. The quality bar is "does this make me a better agent?"
 
 - **Human-facing knowledge** is retrieved *explicitly* — searched when doing work, queried by tools, rendered for humans through familiar interfaces. The format needs to be human-readable. The quality bar is "is this accurate, current, and organized so a human can find it?"
 
 The 17 observation types serve as a routing guide. Concept types (fact, opinion, belief, preference, lesson, decision, commitment, goal_short, goal_long, aspiration, constraint) route predominantly to the **agent's mind** — they shape how the agent thinks and operates. Entity types (milestone, task, resource, event) and Relation types (project, dependency) often appear in **both** — the agent needs them for work, and humans need visibility into them.
 
-**Key insight:** A single observation can produce both. "We chose Postgres over MongoDB because Wayne values simplicity and local-first" contains agent knowledge (Wayne values simplicity — shapes future decisions) and human-facing knowledge (the project uses Postgres — belongs in the architecture doc). One extraction, two destinations.
+**Key insight:** A single observation can produce both. "We chose Postgres over MongoDB because the owner values simplicity and local-first" contains agent knowledge (the owner values simplicity — shapes future decisions) and human-facing knowledge (the project uses Postgres — belongs in the architecture doc). One extraction, two destinations.
 
 **Where this fits in the pipeline:** After extraction and type classification, observations are *routed* based on audience and purpose. The type classification informs routing but doesn't determine it rigidly — context matters. This is a routing/destination concern, not a type classification concern.
 
@@ -96,7 +96,7 @@ What a fact is NOT:
 Quick test: "This is how things are." No evaluation, no want, no behavioral change implied.
 
 Examples:
-- ✅ "SigmaRead has 10 active students across 5 reading levels."
+- ✅ "ExampleApp has 10 active students across 5 reading levels."
 - ✅ "The Vercel project is linked under the sigmascore scope."
 - ✅ "OpenClaw 2026.2.9 fixes post-compaction amnesia."
 
@@ -120,8 +120,8 @@ Quick test: "X thinks Y about Z, because of evidence." Remove the author and evi
 
 Examples:
 - ✅ "Cole assessed that ClawVault's single-call extraction doesn't scale, based on analyzing their chunking approach."
-- ✅ "Wayne judged the earlier Compass repo as low-quality, based on reviewing the output."
-- ✅ "Cole and Wayne concluded the pipeline extracts too much and curates too little, based on auditing 1,085 observations."
+- ✅ "The owner judged the earlier Compass repo as low-quality, based on reviewing the output."
+- ✅ "The maintainers concluded the pipeline extracts too much and curates too little, based on auditing 1,085 observations."
 
 ---
 
@@ -142,9 +142,9 @@ What a belief is NOT:
 Quick test: "X holds that Y is true" — where Y is not derived from specific evidence but from conviction.
 
 Examples:
-- ✅ "Wayne believes the moat is data and iteration, not software."
-- ✅ "Wayne believes working with AI should feel like working with a real person."
-- ✅ "Wayne believes education should be designed for how students learn, not how classrooms operate."
+- ✅ "The owner believes the moat is data and iteration, not software."
+- ✅ "The owner believes working with AI should feel like working with a real person."
+- ✅ "The owner believes education should be designed for how students learn, not how classrooms operate."
 
 ---
 
@@ -166,9 +166,9 @@ What a preference is NOT:
 Quick test: "X prefers A over B." If it can't be phrased that way, it's not a preference.
 
 Examples:
-- ✅ "Wayne prefers honest feedback over softened answers."
-- ✅ "Wayne prefers implement-test-refine over perfect upfront design."
-- ✅ "Wayne prefers simplification over adding features from competitive analysis."
+- ✅ "The owner prefers honest feedback over softened answers."
+- ✅ "The owner prefers implement-test-refine over perfect upfront design."
+- ✅ "The owner prefers simplification over adding features from competitive analysis."
 
 ---
 
@@ -212,7 +212,7 @@ What a decision is NOT:
 Quick test: "We chose A over B, and action followed." If no choice was made, or no action was directed, it's not a decision.
 
 Examples:
-- ✅ "We split the system into Nexus (coordination) and Cortex (memory) instead of building a monolith."
+- ✅ "We split the system into ExampleApp (coordination) and Cortex (memory) instead of building a monolith."
 - ✅ "Context window operational cap set to 500K tokens instead of using the full 1M."
 - ✅ "Sub-agents should be stateless — the orchestrator holds all memory."
 
@@ -298,7 +298,7 @@ Quick test: "X wants to achieve Y over [months/years], and progress is trackable
 Long-term goals tell the agent **how to prioritize**. When short-term goals compete for attention, the one that serves the long-term goal wins.
 
 Examples:
-- ✅ "Build Sigma School into a platform serving thousands of students."
+- ✅ "Build ExampleOrg into a platform serving thousands of students."
 - ✅ "Save $2.6 million for retirement."
 - ✅ "Make Cortex the standard memory infrastructure for OpenClaw agents."
 
@@ -323,7 +323,7 @@ Quick test: "X aspires to Y" — where Y is a direction or vision, not a measura
 Aspirations tell the agent **how to evaluate**. When making judgment calls with no clear answer, the aspiration is the tiebreaker. Aspirations are the north star.
 
 Examples:
-- ✅ "Wayne aspires to transform how children learn through technology."
+- ✅ "The owner aspires to transform how children learn through technology."
 - ✅ "Working with AI should feel like working with a real person."
 - ✅ "Build AI systems that compound intelligence over time, not just respond to prompts."
 
@@ -364,7 +364,7 @@ Quick test: "We cannot do X because of Y" or "We must do X because of Y" — whe
 Examples:
 - ✅ "The Brave Search API is rate-limited to 1 request per second on the Free plan."
 - ✅ "The context window is 1M tokens — all session content must fit within this limit."
-- ✅ "API costs must stay under $500/month." (imposed by Wayne — originated from a decision, now functions as a constraint)
+- ✅ "API costs must stay under $500/month." (imposed by the owner — originated from a decision, now functions as a constraint)
 - ✅ "The system must work offline — no cloud dependencies for core functionality." (originated from a decision to be local-first)
 
 ---
@@ -391,7 +391,7 @@ Quick test: "X is an organized effort involving ideas, work, and resources towar
 Examples:
 - ✅ "Cortex — building persistent memory infrastructure for OpenClaw agents."
 - ✅ "Hydrilla — persuading the city of Austin to properly treat hydrilla in Lake Austin."
-- ✅ "SigmaRead — building an AI-powered reading comprehension tool for students."
+- ✅ "ExampleApp — building an AI-powered reading comprehension tool for students."
 
 ---
 
@@ -423,7 +423,7 @@ Quick test: "X marks significant progress." If no intelligent entity would consi
 
 Examples:
 - ✅ "Cortex Phase 1 shipped — graph builder, observer daemon, and web explorer deployed."
-- ✅ "Max turns 21."
+- ✅ "Person B turns 21."
 - ✅ "Reaching level 60 in World of Warcraft."
 - ✅ "Building the 50th floor on a 100-floor skyscraper."
 - ❌ "Fixed a typo in the README" — not significant enough to be a milestone.
@@ -491,10 +491,10 @@ What a resource is NOT:
 Quick test: "X can be used to perform work, and there's a finite amount of it."
 
 Examples:
-- ✅ "Wayne's Vercel account under the sigmascore scope."
+- ✅ "The owner's Vercel account under the example-org scope."
 - ✅ "Mac Mini running the gateway and observer daemon, plus two more on order."
 - ✅ "$500/month API budget."
-- ✅ "The coleclawson GitHub account."
+- ✅ "The example-user GitHub account."
 
 ---
 
@@ -508,7 +508,7 @@ Three parts:
 - **Any tense** — past, present, or future. An event can be a moment, a duration, or recurring.
 
 What an event is NOT:
-- Not a fact (facts describe state without temporal boundaries — "SigmaRead has 10 students")
+- Not a fact (facts describe state without temporal boundaries — "ExampleApp has 10 students")
 - Not a milestone (milestones mark significant progress — events are any occurrence, significant or not)
 - Not a task (tasks are work to be done — events are things that happen)
 
@@ -519,7 +519,7 @@ Examples:
 - ✅ "Black History Month."
 - ✅ "The product launches next month."
 - ✅ "The morning batch runs at 5am CT daily."
-- ❌ "SigmaRead has 10 students." — state, no temporal boundaries.
+- ❌ "ExampleApp has 10 students." — state, no temporal boundaries.
 
 ---
 
@@ -540,14 +540,14 @@ What a dependency is NOT:
 Quick test: "X cannot proceed without Y." If removing Y would block X, it's a dependency.
 
 Examples:
-- ✅ "Nexus requires Cortex for its knowledge store."
+- ✅ "ExampleApp requires Cortex for its knowledge store."
 - ✅ "The graph builder requires observations to be in the vault."
 - ✅ "The deployment requires tests to pass."
-- ❌ "Wayne owns Sigma School." — a relationship, not a requirement.
+- ❌ "The owner owns ExampleOrg." — a relationship, not a requirement.
 
 ---
 
-**Relationships** are not an observation type. They are graph-level structure — edges between entities that emerge when observations reference multiple entities. The observation pipeline extracts facts (e.g., "Carolyn is Wayne's wife"). The knowledge graph and consolidation process recognize that this fact implies an entity connection and create/strengthen the appropriate edge. See Open Questions for consolidation process notes.
+**Relationships** are not an observation type. They are graph-level structure — edges between entities that emerge when observations reference multiple entities. The observation pipeline extracts facts (e.g., "Person A is related to the owner"). The knowledge graph and consolidation process recognize that this fact implies an entity connection and create/strengthen the appropriate edge. See Open Questions for consolidation process notes.
 
 ---
 
@@ -561,9 +561,9 @@ Suggestions don't represent a distinct type structure — they represent *how* t
 
 ---
 
-**People** are not an observation type. People are **entities** — nodes in the knowledge graph, not observations about nodes. The observation pipeline extracts facts, preferences, beliefs, and other observation types *about* people. Those observations reference people as entities. The knowledge graph maintains the entity records (Wayne, Carolyn, Max, Cole, etc.) and connects them to observations through entity tagging.
+**People** are not an observation type. People are **entities** — nodes in the knowledge graph, not observations about nodes. The observation pipeline extracts facts, preferences, beliefs, and other observation types *about* people. Those observations reference people as entities. The knowledge graph maintains the entity records (the owner, Cole the AI agent, etc.) and connects them to observations through entity tagging.
 
-Example: "Wayne prefers honest feedback over softened answers" is an observation of type **preference** that references the entity **Wayne**. Wayne himself is not an observation — he is the entity the observation is about.
+Example: "The owner prefers honest feedback over softened answers" is an observation of type **preference** that references the entity **owner**. The owner themselves is not an observation — they are the entity the observation is about.
 
 This distinction matters for the pipeline: the extractor identifies observation types and tags them with entity references. The graph builder maintains the entity nodes and connects observations to them.
 
