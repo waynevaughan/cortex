@@ -686,8 +686,9 @@ function draw() {
 }
 
 function getNodeAt(mx, my) {
-  const x = (mx - offsetX) / scale;
-  const y = (my - offsetY) / scale;
+  const rect = canvas.getBoundingClientRect();
+  const x = (mx - rect.left - offsetX) / scale;
+  const y = (my - rect.top - offsetY) / scale;
   for (const n of nodes) {
     const r = nodeRadius(n) + 12;
     if ((n.x - x) ** 2 + (n.y - y) ** 2 < r * r) return n;
@@ -712,8 +713,9 @@ canvas.addEventListener('mousemove', (e) => {
   }
 
   if (dragging) {
-    dragging.x = (e.clientX - offsetX) / scale;
-    dragging.y = (e.clientY - offsetY) / scale;
+    const rect = canvas.getBoundingClientRect();
+    dragging.x = (e.clientX - rect.left - offsetX) / scale;
+    dragging.y = (e.clientY - rect.top - offsetY) / scale;
     dragging.vx = 0;
     dragging.vy = 0;
   } else if (isPanning) {
