@@ -624,6 +624,11 @@ async function reconcileVault(cortexDir, taxonomy, hashIndex) {
   let reconciled = 0;
 
   for (const file of files) {
+    // Skip observations directory — those are old-format entries, not vault documents
+    if (file.startsWith('observations/') || file.startsWith('observations\\')) continue;
+    // Skip dotfiles and hidden directories
+    if (file.includes('/.') || file.startsWith('.')) continue;
+
     const filepath = join(vaultDir, file);
     let fileStat;
     try {
@@ -633,17 +638,13 @@ async function reconcileVault(cortexDir, taxonomy, hashIndex) {
     const mtime = fileStat.mtimeMs;
     const knownMtime = vaultMtimes.get(filepath);
 
-    // Skip if unchanged
-    if (knownMtime && Math.abs(mtime - knownMtime) < 100) continue;
+    // Skip if unchanged (within 2s to handle daemon's own writes)
+    if (knownMtime && Math.abs(mtime - knownMtime) < 2000) continue;
     vaultMtimes.set(filepath, mtime);
 
-    // Skip non-entry files (README, CONVENTIONS, etc.)
+    // Skip non-entry files (no frontmatter)
     const content = await readFile(filepath, 'utf8');
-    if (!content.startsWith('---')) {
-      // Not a frontmatter file — skip on first scan, but if it's new and looks like markdown...
-      // Only reconcile files that have frontmatter or are clearly entries
-      continue;
-    }
+    if (!content.startsWith('---')) continue;
 
     const { meta, body, raw } = parseFrontmatter(content);
 
@@ -719,8 +720,10 @@ async function reconcileVault(cortexDir, taxonomy, hashIndex) {
     const newContent = `${newFrontmatter}\n\n${body}`;
     await writeFile(filepath, newContent, 'utf8');
 
-    // Update hash index
+    // Update hash index and mtime (prevent re-reconcile loop)
     hashIndex.set(currentHash, { id: meta.id, path: filepath, partition: 'vault' });
+    const newStat = await stat(filepath);
+    vaultMtimes.set(filepath, newStat.mtimeMs);
 
     gitCommit(cortexDir, `cortex: reconcile ${meta.type} "${basename(file, '.md')}" (${meta.id.slice(0, 13)})`);
     reconciled++;
