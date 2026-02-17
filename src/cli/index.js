@@ -95,7 +95,13 @@ function parseArgs(argv) {
       const key = arg.slice(2);
       const next = argv[i + 1];
       if (next && !next.startsWith('--')) {
-        args.flags[key] = next;
+        // Handle multiple values for same flag
+        if (args.flags[key]) {
+          args.flags[key] = Array.isArray(args.flags[key]) ? args.flags[key] : [args.flags[key]];
+          args.flags[key].push(next);
+        } else {
+          args.flags[key] = next;
+        }
         i++;
       } else {
         args.flags[key] = true;
