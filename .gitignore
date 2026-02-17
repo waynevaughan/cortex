@@ -21,3 +21,8 @@ tools/com.cortex.daemon.plist
 tools/com.cortex.sleep.plist
 mind/
 queue/
+index/
+daemon-state.json
+daemon.pid
+observer/stats.json
+vault/019c*.md
