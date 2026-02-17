@@ -97,6 +97,12 @@ function handleAPI(url, res) {
     return true;
   }
 
+  if (url.pathname === '/api/graph') {
+    const graph = buildGraph(entries);
+    json(res, graph);
+    return true;
+  }
+
   if (url.pathname === '/api/entry') {
     const id = url.searchParams.get('id');
     const entry = entries.find(e => e.id === id);
@@ -106,6 +112,76 @@ function handleAPI(url, res) {
   }
 
   return false;
+}
+
+// ── Graph builder ──────────────────────────────────────────────────────────────
+
+function buildGraph(entries) {
+  const nodes = [];
+  const edges = [];
+  const entityNodes = new Map(); // name → node id
+
+  for (const e of entries) {
+    // Entry node
+    nodes.push({
+      id: e.id || e.path,
+      label: (e.title || e.body || '').slice(0, 60),
+      type: e.type,
+      partition: e.partition,
+      category: getCat(e.type),
+      importance: parseFloat(e.importance) || 0.6,
+    });
+
+    // Parse entities from frontmatter (stored as string, need to handle)
+    // The body might reference people/projects via attribution
+    if (e.attribution && e.attribution !== 'Cole') {
+      const entityId = `person:${e.attribution.toLowerCase()}`;
+      if (!entityNodes.has(entityId)) {
+        entityNodes.set(entityId, {
+          id: entityId,
+          label: e.attribution,
+          type: 'person_ref',
+          partition: 'graph',
+          category: 'entity',
+          importance: 0.8,
+        });
+      }
+      edges.push({ source: e.id || e.path, target: entityId, type: 'attributed_to' });
+    }
+
+    // Connect entries of same type (weak edges for clustering)
+    // Connect via relates_to if present
+    if (e.relates_to) {
+      const ids = typeof e.relates_to === 'string' ? e.relates_to.split(',').map(s => s.trim()) : [];
+      for (const rid of ids) {
+        if (rid) edges.push({ source: e.id || e.path, target: rid, type: 'relates_to' });
+      }
+    }
+  }
+
+  // Add entity reference nodes
+  for (const [, node] of entityNodes) {
+    nodes.push(node);
+  }
+
+  // Connect entries that share attribution (co-occurrence)
+  const byAttribution = new Map();
+  for (const e of entries) {
+    if (!e.attribution) continue;
+    const key = e.attribution.toLowerCase();
+    if (!byAttribution.has(key)) byAttribution.set(key, []);
+    byAttribution.get(key).push(e.id || e.path);
+  }
+
+  return { nodes, edges };
+}
+
+function getCat(type) {
+  const concepts = new Set(['idea','opinion','belief','preference','lesson','decision','commitment','goal_short','goal_long','aspiration','constraint']);
+  const entities = new Set(['fact','document','person','milestone','task','event','resource']);
+  if (concepts.has(type)) return 'concept';
+  if (entities.has(type)) return 'entity';
+  return 'relation';
 }
 
 function json(res, data) {
@@ -294,6 +370,307 @@ setInterval(load, 10000);
 </body>
 </html>`;
 
+function serveGraphHTML(res) {
+  res.writeHead(200, { 'Content-Type': 'text/html' });
+  res.end(GRAPH_HTML);
+}
+
+const GRAPH_HTML = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cortex — Knowledge Graph</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --bg: #0a0f1a; --card: #111827; --border: #1e293b;
+    --text: #e2e8f0; --muted: #94a3b8; --dim: #64748b;
+    --concept: #818cf8; --entity: #4ade80; --relation: #fbbf24; --ref: #fb7185;
+  }
+  body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); color: var(--text); overflow: hidden; height: 100vh; }
+  canvas { display: block; }
+  .overlay { position: fixed; top: 16px; left: 16px; z-index: 10; }
+  h1 { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+  .subtitle { color: var(--muted); font-size: 12px; margin-bottom: 12px; }
+  .live-dot { display: inline-block; width: 8px; height: 8px; background: var(--entity); border-radius: 50%; margin-right: 6px; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+  .legend { display: flex; gap: 16px; font-size: 12px; margin-bottom: 8px; }
+  .legend-item { display: flex; align-items: center; gap: 4px; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .nav { font-size: 13px; }
+  .nav a { color: var(--concept); text-decoration: none; }
+  .nav a:hover { text-decoration: underline; }
+  .tooltip { position: fixed; background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; max-width: 350px; font-size: 13px; pointer-events: none; display: none; z-index: 20; }
+  .tooltip-type { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+  .tooltip-body { color: var(--muted); line-height: 1.5; }
+  .tooltip-meta { color: var(--dim); font-size: 11px; margin-top: 6px; }
+  .stats-bar { position: fixed; bottom: 16px; left: 16px; font-size: 12px; color: var(--dim); z-index: 10; }
+</style>
+</head>
+<body>
+<div class="overlay">
+  <h1><span class="live-dot"></span>Knowledge Graph</h1>
+  <p class="subtitle">Force-directed · Auto-refreshes every 15s</p>
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:var(--concept)"></div> Concept (Mind)</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--entity)"></div> Entity (Vault)</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--relation)"></div> Relation</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--ref)"></div> Person ref</div>
+  </div>
+  <div class="nav"><a href="/">← Entry list</a></div>
+</div>
+<div class="tooltip" id="tooltip">
+  <div class="tooltip-type" id="tt-type"></div>
+  <div class="tooltip-body" id="tt-body"></div>
+  <div class="tooltip-meta" id="tt-meta"></div>
+</div>
+<div class="stats-bar" id="stats-bar"></div>
+<canvas id="canvas"></canvas>
+
+<script>
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+const tooltip = document.getElementById('tooltip');
+
+let W, H, nodes = [], edges = [], dragging = null, hovering = null;
+let offsetX = 0, offsetY = 0, scale = 1;
+let dragStartX, dragStartY, isPanning = false;
+
+function resize() {
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resize);
+resize();
+
+const COLORS = { concept: '#818cf8', entity: '#4ade80', relation: '#fbbf24', person_ref: '#fb7185' };
+
+function nodeColor(n) {
+  if (n.type === 'person_ref') return COLORS.person_ref;
+  return COLORS[n.category] || '#94a3b8';
+}
+
+function nodeRadius(n) {
+  const base = n.type === 'person_ref' ? 12 : 8;
+  return base + (n.importance || 0.5) * 6;
+}
+
+async function loadGraph() {
+  const data = await fetch('/api/graph').then(r => r.json());
+  const oldIds = new Set(nodes.map(n => n.id));
+
+  // Preserve positions for existing nodes
+  const posMap = new Map();
+  for (const n of nodes) posMap.set(n.id, { x: n.x, y: n.y, vx: n.vx, vy: n.vy });
+
+  nodes = data.nodes.map(n => {
+    const old = posMap.get(n.id);
+    return {
+      ...n,
+      x: old ? old.x : W/2 + (Math.random() - 0.5) * 300,
+      y: old ? old.y : H/2 + (Math.random() - 0.5) * 300,
+      vx: old ? old.vx : 0,
+      vy: old ? old.vy : 0,
+    };
+  });
+  edges = data.edges;
+
+  document.getElementById('stats-bar').textContent =
+    nodes.length + ' nodes · ' + edges.length + ' edges';
+}
+
+// Force simulation
+function simulate() {
+  const nodeMap = new Map(nodes.map(n => [n.id, n]));
+
+  // Center gravity
+  for (const n of nodes) {
+    n.vx += (W/2 - n.x) * 0.0005;
+    n.vy += (H/2 - n.y) * 0.0005;
+  }
+
+  // Repulsion between all nodes
+  for (let i = 0; i < nodes.length; i++) {
+    for (let j = i + 1; j < nodes.length; j++) {
+      const a = nodes[i], b = nodes[j];
+      let dx = b.x - a.x, dy = b.y - a.y;
+      let dist = Math.sqrt(dx*dx + dy*dy) || 1;
+      let force = 800 / (dist * dist);
+      let fx = dx / dist * force, fy = dy / dist * force;
+      a.vx -= fx; a.vy -= fy;
+      b.vx += fx; b.vy += fy;
+    }
+  }
+
+  // Attraction along edges
+  for (const e of edges) {
+    const a = nodeMap.get(e.source), b = nodeMap.get(e.target);
+    if (!a || !b) continue;
+    let dx = b.x - a.x, dy = b.y - a.y;
+    let dist = Math.sqrt(dx*dx + dy*dy) || 1;
+    let force = (dist - 120) * 0.005;
+    let fx = dx / dist * force, fy = dy / dist * force;
+    a.vx += fx; a.vy += fy;
+    b.vx -= fx; b.vy -= fy;
+  }
+
+  // Category clustering — same-type nodes attract slightly
+  const byType = new Map();
+  for (const n of nodes) {
+    if (!byType.has(n.type)) byType.set(n.type, []);
+    byType.get(n.type).push(n);
+  }
+  for (const [, group] of byType) {
+    if (group.length < 2) continue;
+    let cx = 0, cy = 0;
+    for (const n of group) { cx += n.x; cy += n.y; }
+    cx /= group.length; cy /= group.length;
+    for (const n of group) {
+      n.vx += (cx - n.x) * 0.002;
+      n.vy += (cy - n.y) * 0.002;
+    }
+  }
+
+  // Damping and position update
+  for (const n of nodes) {
+    if (n === dragging) continue;
+    n.vx *= 0.85;
+    n.vy *= 0.85;
+    n.x += n.vx;
+    n.y += n.vy;
+  }
+}
+
+function draw() {
+  ctx.clearRect(0, 0, W, H);
+  ctx.save();
+  ctx.translate(offsetX, offsetY);
+  ctx.scale(scale, scale);
+
+  const nodeMap = new Map(nodes.map(n => [n.id, n]));
+
+  // Edges
+  ctx.lineWidth = 1;
+  for (const e of edges) {
+    const a = nodeMap.get(e.source), b = nodeMap.get(e.target);
+    if (!a || !b) continue;
+    ctx.strokeStyle = 'rgba(148, 163, 184, 0.15)';
+    ctx.beginPath();
+    ctx.moveTo(a.x, a.y);
+    ctx.lineTo(b.x, b.y);
+    ctx.stroke();
+  }
+
+  // Nodes
+  for (const n of nodes) {
+    const r = nodeRadius(n);
+    const color = nodeColor(n);
+    const isHover = hovering === n;
+
+    // Glow
+    if (isHover) {
+      ctx.shadowColor = color;
+      ctx.shadowBlur = 20;
+    }
+
+    ctx.fillStyle = color;
+    ctx.globalAlpha = isHover ? 1 : 0.8;
+    ctx.beginPath();
+    ctx.arc(n.x, n.y, r, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.shadowBlur = 0;
+    ctx.globalAlpha = 1;
+
+    // Label
+    ctx.fillStyle = '#e2e8f0';
+    ctx.font = (isHover ? 'bold ' : '') + '10px -apple-system, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    const label = n.label.length > 30 ? n.label.slice(0, 30) + '…' : n.label;
+    ctx.fillText(label, n.x, n.y + r + 14);
+  }
+
+  ctx.restore();
+}
+
+function getNodeAt(mx, my) {
+  const x = (mx - offsetX) / scale;
+  const y = (my - offsetY) / scale;
+  for (const n of nodes) {
+    const r = nodeRadius(n) + 4;
+    if ((n.x - x) ** 2 + (n.y - y) ** 2 < r * r) return n;
+  }
+  return null;
+}
+
+canvas.addEventListener('mousemove', (e) => {
+  const n = getNodeAt(e.clientX, e.clientY);
+  hovering = n;
+  canvas.style.cursor = n ? 'pointer' : (isPanning ? 'grabbing' : 'default');
+
+  if (n) {
+    document.getElementById('tt-type').textContent = n.type + ' · ' + n.category + ' · ' + n.partition;
+    document.getElementById('tt-body').textContent = n.label;
+    document.getElementById('tt-meta').textContent = 'importance: ' + (n.importance || '?');
+    tooltip.style.display = 'block';
+    tooltip.style.left = (e.clientX + 16) + 'px';
+    tooltip.style.top = (e.clientY + 16) + 'px';
+  } else {
+    tooltip.style.display = 'none';
+  }
+
+  if (dragging) {
+    dragging.x = (e.clientX - offsetX) / scale;
+    dragging.y = (e.clientY - offsetY) / scale;
+    dragging.vx = 0;
+    dragging.vy = 0;
+  } else if (isPanning) {
+    offsetX += e.clientX - dragStartX;
+    offsetY += e.clientY - dragStartY;
+    dragStartX = e.clientX;
+    dragStartY = e.clientY;
+  }
+});
+
+canvas.addEventListener('mousedown', (e) => {
+  const n = getNodeAt(e.clientX, e.clientY);
+  if (n) {
+    dragging = n;
+  } else {
+    isPanning = true;
+    dragStartX = e.clientX;
+    dragStartY = e.clientY;
+    canvas.style.cursor = 'grabbing';
+  }
+});
+
+canvas.addEventListener('mouseup', () => {
+  dragging = null;
+  isPanning = false;
+});
+
+canvas.addEventListener('wheel', (e) => {
+  e.preventDefault();
+  const zoom = e.deltaY > 0 ? 0.9 : 1.1;
+  const mx = e.clientX, my = e.clientY;
+  offsetX = mx - (mx - offsetX) * zoom;
+  offsetY = my - (my - offsetY) * zoom;
+  scale *= zoom;
+}, { passive: false });
+
+function loop() {
+  simulate();
+  draw();
+  requestAnimationFrame(loop);
+}
+
+loadGraph().then(loop);
+setInterval(loadGraph, 15000);
+</script>
+</body>
+</html>`;
+
 // ── Server ─────────────────────────────────────────────────────────────────────
 
 const server = createServer((req, res) => {
@@ -301,6 +678,11 @@ const server = createServer((req, res) => {
 
   if (url.pathname.startsWith('/api/')) {
     if (handleAPI(url, res)) return;
+  }
+
+  if (url.pathname === '/graph') {
+    serveGraphHTML(res);
+    return;
   }
 
   serveHTML(res);

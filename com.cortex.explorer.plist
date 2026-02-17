@@ -15,6 +15,8 @@
     <dict>
         <key>CORTEX_ROOT</key>
         <string>/Users/cole/.openclaw/workspace/cortex-review</string>
+        <key>PORT</key>
+        <string>8113</string>
     </dict>
 
     <key>RunAtLoad</key>
