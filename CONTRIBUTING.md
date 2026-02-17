@@ -44,7 +44,7 @@ Version history:
    git push -u origin feature/your-feature-name
    ```
 
-4. PR is reviewed (by Wayne for architecture decisions, autonomously for implementation details)
+4. PR is reviewed (by the owner for architecture decisions, autonomously for implementation details)
 
 5. After approval, merge to `main` (squash or merge commit depending on change size)
 
@@ -81,7 +81,7 @@ Explain what and why, not how.
 
 3. All tests must pass before merging
 
-4. Cole handles 99% of PRs autonomously; Wayne reviews architectural changes
+4. Cole handles 99% of PRs autonomously; the owner reviews architectural changes
 
 ## Testing
 
@@ -115,4 +115,4 @@ node scripts/check-vault.js
 
 ## Questions?
 
-This project is developed by Wayne and Cole (OpenClaw AI assistant). For questions about the development process, see the workspace documentation at `/Users/cole/.openclaw/workspace/`.
+This project is developed by the maintainers. For questions about the development process, see the workspace documentation.
