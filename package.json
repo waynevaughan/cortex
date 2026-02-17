@@ -1,10 +1,16 @@
 {
-  "name": "cortex-explorer",
-  "version": "0.1.0",
+  "name": "cortex",
+  "version": "0.3.1",
   "type": "module",
-  "description": "Cortex Knowledge Graph Explorer",
+  "description": "Cortex — persistent memory infrastructure for AI agents",
+  "bin": {
+    "cortex": "src/cli/index.js"
+  },
   "scripts": {
-    "dev": "node explorer/server.js",
-    "build": "node src/graph/cli.js build vault"
+    "daemon": "node src/daemon/index.js",
+    "sleep": "node src/sleep/index.js",
+    "test": "node --test test/daemon/daemon.test.js test/cli/cli.test.js test/sleep/sleep.test.js test/integration/pipeline.test.js",
+    "explorer": "node explorer/server.js",
+    "graph:build": "node src/graph/cli.js build vault"
   }
 }
