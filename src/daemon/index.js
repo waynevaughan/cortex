@@ -823,17 +823,26 @@ async function main() {
 
   // Vault filesystem watcher
   const vaultDir = join(cortexDir, 'vault');
+  let vaultReconcileTimer = null;
+  let vaultReconciling = false;
   try {
     watch(vaultDir, { persistent: true, recursive: true }, (eventType, filename) => {
       if (!filename?.endsWith('.md')) return;
-      // Debounce — wait for writes to settle
-      setTimeout(async () => {
+      if (vaultReconciling) return; // Skip events from our own writes
+      // Debounce — coalesce rapid changes into one reconcile
+      if (vaultReconcileTimer) clearTimeout(vaultReconcileTimer);
+      vaultReconcileTimer = setTimeout(async () => {
+        if (vaultReconciling) return;
+        vaultReconciling = true;
         try {
           await reconcileVault(cortexDir, taxonomy, hashIndex);
         } catch (err) {
           console.error(`[daemon] Vault reconcile error: ${err.message}`);
+        } finally {
+          // Hold the lock briefly to ignore our own commit events
+          setTimeout(() => { vaultReconciling = false; }, 3000);
         }
-      }, 1000);
+      }, 2000);
     });
     console.log('[daemon] Watching vault');
   } catch (err) {
