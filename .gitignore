@@ -16,3 +16,6 @@ vault/private/
 vault/PROFILES.md
 vault/INDEX.md
 docs/buffer-our-setup.md
+docs/buffer-openclaw.md
+tools/com.cortex.daemon.plist
+tools/com.cortex.sleep.plist
