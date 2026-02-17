@@ -689,7 +689,7 @@ function getNodeAt(mx, my) {
   const x = (mx - offsetX) / scale;
   const y = (my - offsetY) / scale;
   for (const n of nodes) {
-    const r = nodeRadius(n) + 4;
+    const r = nodeRadius(n) + 12;
     if ((n.x - x) ** 2 + (n.y - y) ** 2 < r * r) return n;
   }
   return null;
@@ -724,9 +724,11 @@ canvas.addEventListener('mousemove', (e) => {
   }
 });
 
-let dragMoved = false;
+let dragDist = 0, mouseDownX = 0, mouseDownY = 0;
 canvas.addEventListener('mousedown', (e) => {
-  dragMoved = false;
+  dragDist = 0;
+  mouseDownX = e.clientX;
+  mouseDownY = e.clientY;
   const n = getNodeAt(e.clientX, e.clientY);
   if (n) {
     dragging = n;
@@ -738,11 +740,9 @@ canvas.addEventListener('mousedown', (e) => {
   }
 });
 
-canvas.addEventListener('mousemove', () => { dragMoved = true; });
-
 canvas.addEventListener('mouseup', (e) => {
-  if (dragging && !dragMoved) {
-    // Click without drag — open modal
+  dragDist = Math.abs(e.clientX - mouseDownX) + Math.abs(e.clientY - mouseDownY);
+  if (dragging && dragDist < 6) {
     openNodeModal(dragging);
   }
   dragging = null;
