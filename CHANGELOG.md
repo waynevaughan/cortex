@@ -27,4 +27,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Vault conventions defined for consistent formatting and metadata
 - Entity detection and profile management system
 
-[0.1.0]: https://github.com/coleturner/cortex/releases/tag/v0.1.0
+[0.1.0]: https://github.com/example-user/cortex/releases/tag/v0.1.0
