@@ -34,7 +34,7 @@ Canonical terms for the Cortex system. Use these consistently across all specs, 
 
 | Term | Definition |
 |---|---|
-| **Buffer** | The JSONL file. Append-only processing queue. The single entry point for all writes to the Cortex — agent observations and application submissions alike. Not storage — a transit layer. |
+| **Queue** | The JSONL file. Append-only processing queue. The single entry point for all writes to the Cortex — agent observations and application writes alike. Not storage — a transit layer. |
 | **Daemon** | The background process that reads the buffer, validates, deduplicates, routes, and writes entries to the Cortex. The gatekeeper. Zero LLM. |
 | **Offset** | The daemon's position in the buffer. "I've processed up to here." Persisted in a state file. |
 | **Rotation** | Buffer cleanup. At 2MB, the JSONL file rotates. 3 files kept. Offset resets. |
