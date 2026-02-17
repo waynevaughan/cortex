@@ -11,3 +11,7 @@ observer/staging/
 observer/state.json
 observer/*.pid
 spec/
+vault/observations/
+vault/private/
+vault/PROFILES.md
+vault/INDEX.md
