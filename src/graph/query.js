@@ -14,7 +14,7 @@
 /**
  * Look up a node by its ID.
  * @param {object} graph - The graph JSON object
- * @param {string} id - Node ID (e.g., "person:wayne-vaughan")
+ * @param {string} id - Node ID (e.g., "person:user-alpha")
  * @param {QueryOptions} [opts]
  * @returns {object|null} The node, or null if not found / filtered out
  */
