@@ -598,6 +598,140 @@ async function processQueue(cortexDir, state, taxonomy, hashIndex) {
   return state;
 }
 
+// --- Vault Filesystem Reconciliation (D29) ---
+
+/**
+ * Track known vault file mtimes for change detection.
+ * @type {Map<string, number>}
+ */
+const vaultMtimes = new Map();
+
+/**
+ * Scan vault for new or changed files and reconcile them.
+ * - New files without id: generate id, fill fields, rewrite, commit
+ * - Changed files: recompute source_hash, update frontmatter, commit
+ * @param {string} cortexDir
+ * @param {Object} taxonomy
+ * @param {Map} hashIndex
+ */
+async function reconcileVault(cortexDir, taxonomy, hashIndex) {
+  const vaultDir = join(cortexDir, 'vault');
+  let files;
+  try {
+    files = (await readdir(vaultDir, { recursive: true })).filter(f => f.endsWith('.md'));
+  } catch { return; }
+
+  let reconciled = 0;
+
+  for (const file of files) {
+    const filepath = join(vaultDir, file);
+    let fileStat;
+    try {
+      fileStat = await stat(filepath);
+    } catch { continue; }
+
+    const mtime = fileStat.mtimeMs;
+    const knownMtime = vaultMtimes.get(filepath);
+
+    // Skip if unchanged
+    if (knownMtime && Math.abs(mtime - knownMtime) < 100) continue;
+    vaultMtimes.set(filepath, mtime);
+
+    // Skip non-entry files (README, CONVENTIONS, etc.)
+    const content = await readFile(filepath, 'utf8');
+    if (!content.startsWith('---')) {
+      // Not a frontmatter file — skip on first scan, but if it's new and looks like markdown...
+      // Only reconcile files that have frontmatter or are clearly entries
+      continue;
+    }
+
+    const { meta, body, raw } = parseFrontmatter(content);
+
+    // Skip if already in hash index and hash matches (no change to body)
+    const currentHash = sha256(body);
+    if (meta.source_hash === currentHash && meta.id) {
+      // No change — just update our mtime tracking
+      continue;
+    }
+
+    let changed = false;
+    const now = new Date().toISOString();
+
+    // Fill missing id
+    if (!meta.id) {
+      meta.id = uuidv7();
+      changed = true;
+      console.log(`[daemon] Vault reconcile: generated id for ${file}`);
+    }
+
+    // Fill missing type — default to 'document' for vault
+    if (!meta.type) {
+      meta.type = 'document';
+      changed = true;
+    }
+
+    // Fill missing category
+    if (!meta.category && meta.type && taxonomy[meta.type]) {
+      meta.category = taxonomy[meta.type];
+      changed = true;
+    }
+
+    // Fill missing created
+    if (!meta.created) {
+      meta.created = now;
+      changed = true;
+    }
+
+    // Fill missing relates_to
+    if (!meta.relates_to) {
+      meta.relates_to = [];
+      changed = true;
+    }
+
+    // Recompute source_hash if body changed
+    if (meta.source_hash !== currentHash) {
+      meta.source_hash = currentHash;
+      changed = true;
+    }
+
+    if (!changed) continue;
+
+    // Rewrite the file with updated frontmatter
+    // Preserve application fields (everything below # --- separator)
+    const separatorIdx = raw.indexOf('# ---');
+    let appMeta = {};
+    if (separatorIdx >= 0) {
+      const appSection = raw.slice(separatorIdx + 5).trim();
+      for (const line of appSection.split('\n')) {
+        const kvMatch = line.match(/^(\w[\w_]*)\s*:\s*(.*)$/);
+        if (kvMatch) {
+          const val = kvMatch[2].trim();
+          if (val.startsWith('[') && val.endsWith(']')) {
+            appMeta[kvMatch[1]] = val.slice(1, -1).split(',').map(s => s.trim().replace(/^["']|["']$/g, ''));
+          } else {
+            appMeta[kvMatch[1]] = val;
+          }
+        }
+      }
+    }
+
+    const newFrontmatter = serializeFrontmatter(meta, Object.keys(appMeta).length > 0 ? appMeta : null);
+    const newContent = `${newFrontmatter}\n\n${body}`;
+    await writeFile(filepath, newContent, 'utf8');
+
+    // Update hash index
+    hashIndex.set(currentHash, { id: meta.id, path: filepath, partition: 'vault' });
+
+    gitCommit(cortexDir, `cortex: reconcile ${meta.type} "${basename(file, '.md')}" (${meta.id.slice(0, 13)})`);
+    reconciled++;
+    console.log(`[daemon] Reconciled vault entry: ${file} (${meta.id.slice(0, 13)})`);
+  }
+
+  if (reconciled > 0) {
+    console.log(`[daemon] Vault reconciliation: ${reconciled} entries updated`);
+  }
+}
+
 // --- CLI ---
 
 function parseArgs(argv) {
@@ -681,15 +815,38 @@ async function main() {
     });
     console.log('[daemon] Watching queue');
   } catch (err) {
-    console.warn(`[daemon] Watch failed: ${err.message}`);
+    console.warn(`[daemon] Queue watch failed: ${err.message}`);
   }
 
-  // Polling fallback
+  // Vault filesystem watcher
+  const vaultDir = join(cortexDir, 'vault');
+  try {
+    watch(vaultDir, { persistent: true, recursive: true }, (eventType, filename) => {
+      if (!filename?.endsWith('.md')) return;
+      // Debounce — wait for writes to settle
+      setTimeout(async () => {
+        try {
+          await reconcileVault(cortexDir, taxonomy, hashIndex);
+        } catch (err) {
+          console.error(`[daemon] Vault reconcile error: ${err.message}`);
+        }
+      }, 1000);
+    });
+    console.log('[daemon] Watching vault');
+  } catch (err) {
+    console.warn(`[daemon] Vault watch failed: ${err.message}`);
+  }
+
+  // Initial vault scan
+  await reconcileVault(cortexDir, taxonomy, hashIndex);
+
+  // Polling fallback (processes both queue and vault)
   const poll = async () => {
     while (true) {
       await new Promise(r => setTimeout(r, POLL_INTERVAL));
       try {
         state = await processQueue(cortexDir, state, taxonomy, hashIndex);
+        await reconcileVault(cortexDir, taxonomy, hashIndex);
         await saveState(statePath, state);
       } catch (err) {
         console.error(`[daemon] Poll error: ${err.message}`);

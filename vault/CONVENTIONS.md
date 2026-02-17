@@ -1,10 +1,12 @@
 ---
-title: Conventions
-author: cole
+id: 019c6a09-91b3-7cf1-b5ea-660076df8925
+type: document
+category: entity
 created: 2026-02-14
-status: active
-tags: [type/guide, status/active, topic/architecture, project/cortex]
+source_hash: 4a89548961d424f4dd65d353a73c77d251ceebd22ca6406e363f7a0281e8d75d
+relates_to: []
 ---
+
 
 # Conventions
 
