@@ -45,12 +45,12 @@ Like the brain's sensory buffer, observations at this stage are **temporary by d
 
 ### Stage 2: Classification (Working Memory)
 
-The agent classifies the observation into one of three **categories** and 18 **types**:
+The agent classifies the observation into one of three **categories** and 21 **types**:
 
 | Category | What it represents | Types |
 |---|---|---|
-| **Concept** | Ideas the agent holds | fact, opinion, belief, preference, lesson, decision, commitment, goal_short, goal_long, aspiration, constraint |
-| **Entity** | Things in the world | milestone, task, event, resource |
+| **Concept** | Ideas the agent holds | idea, opinion, belief, preference, lesson, decision, commitment, goal_short, goal_long, aspiration, constraint |
+| **Entity** | Things in the world | fact, document, person, milestone, task, event, resource |
 | **Relation** | Connections between things | project, dependency |
 
 This classification isn't arbitrary filing — it determines how the knowledge behaves:

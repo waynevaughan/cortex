@@ -55,6 +55,8 @@ The agent executes:
 echo '{"timestamp":"2026-02-16T15:23:14.527Z","bucket":"explicit","type":"decision",...}' >> observer/observations.jsonl
 ```
 
+**JSONL Safety Note:** All JSONL writes MUST use proper JSON serialization (e.g., `JSON.stringify()`, `json.dumps()`). Never construct JSON via string concatenation — this risks malformed entries that break the daemon pipeline.
+
 **What can go wrong:**
 - File write fails (disk full, permissions) → Agent logs error, continues conversation. Observation lost unless agent retries at session end. **OPEN QUESTION:** Should agent auto-retry failed writes?
 - Session crashes before write completes → Observation lost. Acceptable — conversation context already gone.
@@ -94,6 +96,8 @@ The daemon uses Node.js `fs.watch` on `observer/observations.jsonl` with a 30-se
 
 **Component:** Daemon
 **Time:** <50ms for typical observation (~300 bytes)
+
+**Milestone Blocking Note:** The daemon blocks `milestone` type entries from automatic processing. Milestones require explicit promotion.
 
 **Read operation:**
 1. Open `observer/observations.jsonl` for reading
@@ -203,7 +207,7 @@ Agent provided explicit scores, so daemon uses those (clamped to [0.0, 1.0]):
 - **Importance:** 0.9 (agent-provided)
 
 If agent hadn't provided scores, daemon would use bucket defaults:
-- Explicit: confidence = 0.9, importance = 0.5
+- Explicit: confidence = 0.9, importance = 0.6
 
 #### 5b. Structural Signal Adjustments
 
@@ -237,7 +241,7 @@ rules:
 
 #### 5d. Memorization Threshold Check
 
-**Threshold:** importance ≥ 0.5
+**Threshold:** importance ≥ 0.6
 
 This observation: importance = 1.0 → **PASS** → Proceed to deduplication
 

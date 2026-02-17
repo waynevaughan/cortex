@@ -24,9 +24,9 @@ Canonical terms for the Cortex system. Use these consistently across all specs, 
 
 | Term | Definition |
 |---|---|
-| **Observation** | Ephemeral input from an agent during conversation. Written to the buffer. A staging state, not a type. Consumed by the daemon and transformed into an entry. |
+| **Observation** | Ephemeral input from an agent during conversation. Written to the queue by the agent during conversation. The agent decides what to observe — there is no automated extraction. A staging state, not a type. Consumed by the daemon and transformed into an entry. |
 | **Entry** | A document in the Cortex (mind or vault). Has Cortex frontmatter + body. Created exclusively through the daemon pipeline. |
-| **Type** | The specific kind of knowledge (fact, decision, preference, person, project, etc.). 17 defaults, extensible via taxonomy config. |
+| **Type** | The specific kind of knowledge (fact, decision, preference, person, project, etc.). 21 defaults, extensible via taxonomy config. |
 | **Category** | The grouping above type. Three categories: concept (ideas), entity (things), relation (connections). Every type belongs to one category. |
 | **Taxonomy** | The full type→category mapping. Ships with defaults, extensible via `taxonomy.yml`. Add-only. |
 
@@ -35,7 +35,7 @@ Canonical terms for the Cortex system. Use these consistently across all specs, 
 | Term | Definition |
 |---|---|
 | **Queue** | The JSONL file. Append-only processing queue. The single entry point for all writes to the Cortex — agent observations and application writes alike. Not storage — a transit layer. |
-| **Daemon** | The background process that reads the buffer, validates, deduplicates, routes, and writes entries to the Cortex. The gatekeeper. Zero LLM. |
+| **Daemon** | The background process that reads the buffer, validates, deduplicates, routes, and writes entries to the Cortex. The gatekeeper. Zero-LLM — the daemon makes no AI/LLM calls. It validates, deduplicates, routes, and writes mechanically. |
 | **Offset** | The daemon's position in the buffer. "I've processed up to here." Persisted in a state file. |
 | **Rotation** | Buffer cleanup. At 2MB, the JSONL file rotates. 3 files kept. Offset resets. |
 

@@ -3,14 +3,14 @@
 This document defines the complete type taxonomy for the Cortex knowledge graph. It contains:
 
 1. **The knowledge graph split** — The agent's mind vs. the human's computer
-2. **The full type taxonomy** — 17 types across 3 categories (concept/entity/relation), each with rigorous first-principles definitions, distinguishing criteria, and examples
+2. **The full type taxonomy** — 21 types across 3 categories (concept/entity/relation), each with rigorous first-principles definitions, distinguishing criteria, and examples
 3. **Ontology implications** — These observation types are also the node types in the knowledge graph
 
 **Origin:** Built iteratively through dialogue between Wayne and Cole. Started from analysis of early observation data and evolved into first-principles epistemology. The taxonomy defines what Cortex knows and how it's organized.
 
-**How it's used:** The agent applies this taxonomy at write time via the `cortex_observe` skill. When the agent identifies an observation during conversation, it classifies it into one of the 17 types below before writing to `observer/observations.jsonl`. The daemon validates the type against the default taxonomy plus any custom types defined in `observer/taxonomy.yml`. `observation` is a staging state for unclassified input, not a final type — it must resolve to a typed category or be pruned.
+**How it's used:** The agent applies this taxonomy at write time via the `cortex_observe` skill. When the agent identifies an observation during conversation, it classifies it into one of the 21 types below before writing to `observer/observations.jsonl`. The daemon validates the type against the default taxonomy plus any custom types defined in `observer/taxonomy.yml`. `observation` is a staging state for unclassified input, not a final type — it must resolve to a typed category or be pruned.
 
-**Applies to:** v0.2.0 (agent-as-extractor architecture)
+**Applies to:** v0.3.0 (agent-as-extractor architecture)
 
 ---
 
@@ -52,7 +52,7 @@ The same information can live in both. "Cortex uses SQLite" might be in the agen
 
 - **Human-facing knowledge** is retrieved *explicitly* — searched when doing work, queried by tools, rendered for humans through familiar interfaces. The format needs to be human-readable. The quality bar is "is this accurate, current, and organized so a human can find it?"
 
-The 17 observation types serve as a routing guide. Concept types (fact, opinion, belief, preference, lesson, decision, commitment, goal_short, goal_long, aspiration, constraint) route predominantly to the **agent's mind** — they shape how the agent thinks and operates. Entity types (milestone, task, resource, event) and Relation types (project, dependency) often appear in **both** — the agent needs them for work, and humans need visibility into them.
+The 21 observation types serve as a routing guide. Concept types (idea, opinion, belief, preference, lesson, decision, commitment, goal_short, goal_long, aspiration, constraint) route to the **Mind** — they shape how the agent thinks and operates. Entity types (fact, document, person, milestone, task, event, resource) and Relation types (project, dependency) route to the **Vault** and may appear in both.
 
 **Key insight:** A single observation can produce both. "We chose Postgres over MongoDB because Wayne values simplicity and local-first" contains agent knowledge (Wayne values simplicity — shapes future decisions) and human-facing knowledge (the project uses Postgres — belongs in the architecture doc). One extraction, two destinations.
 
@@ -66,9 +66,9 @@ The 17 observation types serve as a routing guide. Concept types (fact, opinion,
 
 Observation types are organized into three categories:
 
-**Concept (12 types)** — ideas the agent holds. These are products of intelligent entities and describe how they model reality, form judgments, hold convictions, want things, learn from experience, commit to choices, and direct toward future states. Types: fact, opinion, belief, preference, lesson, decision, commitment, goal_short, goal_long, aspiration, constraint.
+**Concept (12 types)** — ideas the agent holds. These are products of intelligent entities and describe how they model reality, form judgments, hold convictions, want things, learn from experience, commit to choices, and direct toward future states. Types: idea, opinion, belief, preference, lesson, decision, commitment, goal_short, goal_long, aspiration, constraint.
 
-**Entity (4 types)** — things in the world. These are concrete objects, resources, and occurrences that can be tracked and managed. Types: milestone, task, event, resource.
+**Entity (7 types)** — things in the world. These are concrete objects, resources, and occurrences that can be tracked and managed. Types: fact, document, person, milestone, task, event, resource.
 
 **Relation (2 types)** — connections between things. These describe how entities relate to and depend on each other. Types: project, dependency.
 
@@ -78,27 +78,27 @@ Each type follows the same structure: definition, three parts, what it's NOT, qu
 
 ---
 
-### fact
+### idea
 
-A fact is a discrete piece of information that attempts to accurately describe the state of some part of reality.
+An idea is a transient cognitive concept — a thought, notion, or mental model that the agent holds but that hasn't crystallized into an opinion, belief, decision, or other specific concept type.
 
 Three parts:
-- **Discrete** — a single, specific piece of information. Not a conclusion, not a want, not a behavioral change.
-- **Describes state** — it tells you what is, not what should be or what someone wants.
-- **Collectively provides context** — individual facts may seem low-value, but together they form the map of reality the agent needs to operate.
+- **Cognitive** — it exists in the agent's mind as a product of thinking, not as a description of external reality (that's a fact).
+- **Transient** — ideas are the most volatile concept type. They may evolve into opinions, decisions, or lessons — or decay if never reinforced.
+- **Unresolved** — an idea hasn't committed to evaluation (opinion), conviction (belief), or action (decision). It's a concept in formation.
 
-What a fact is NOT:
-- Not a preference (no entity wanting A over B)
-- Not a lesson (no direct, predictable behavioral change)
-- Not a decision (no choice between alternatives)
-- Not an opinion (no evaluation or judgment)
+What an idea is NOT:
+- Not a fact (facts describe external reality — ideas are internal cognitive products)
+- Not an opinion (opinions include evaluation and evidence — ideas are pre-evaluative)
+- Not a decision (decisions commit to action — ideas are uncommitted)
+- Not a lesson (lessons change behavior predictably — ideas are exploratory)
 
-Quick test: "This is how things are." No evaluation, no want, no behavioral change implied.
+Quick test: "The agent is thinking about X" — where X hasn't crystallized into a judgment, commitment, or behavioral change yet. If it has, use the more specific type.
 
 Examples:
-- ✅ "SigmaRead has 10 active students across 5 reading levels."
-- ✅ "The Vercel project is linked under the sigmascore scope."
-- ✅ "OpenClaw 2026.2.9 fixes post-compaction amnesia."
+- ✅ "Maybe we could use event sourcing for the pipeline instead of direct writes."
+- ✅ "What if the taxonomy supported inheritance — types could extend other types?"
+- ✅ "The sleep cycle might benefit from running semantic similarity across partitions."
 
 ---
 
@@ -396,6 +396,44 @@ Examples:
 ---
 
 ## Entity Types
+
+### fact
+
+**Migration note:** Moved from concept to entity per D30 — facts describe external reality (things in the world), not cognitive products (ideas the agent holds).
+
+A fact is a discrete piece of information that attempts to accurately describe the state of some part of reality.
+
+Three parts:
+- **Discrete** — a single, specific piece of information. Not a conclusion, not a want, not a behavioral change.
+- **Describes state** — it tells you what is, not what should be or what someone wants.
+- **Collectively provides context** — individual facts may seem low-value, but together they form the map of reality the agent needs to operate.
+
+What a fact is NOT:
+- Not a preference (no entity wanting A over B)
+- Not a lesson (no direct, predictable behavioral change)
+- Not a decision (no choice between alternatives)
+- Not an opinion (no evaluation or judgment)
+
+Quick test: "This is how things are." No evaluation, no want, no behavioral change implied.
+
+Examples:
+- ✅ "SigmaRead has 10 active students across 5 reading levels."
+- ✅ "The Vercel project is linked under the sigmascore scope."
+- ✅ "OpenClaw 2026.2.9 fixes post-compaction amnesia."
+
+---
+
+### document
+
+A document is a discrete, identifiable unit of written content — a file, spec, report, or reference material that can be retrieved and cited.
+
+---
+
+### person
+
+A person is an individual human who appears in the agent's knowledge as a distinct entity that can be referenced, attributed to, and connected with other knowledge.
+
+---
 
 ### milestone
 
