@@ -9,8 +9,6 @@
   "scripts": {
     "daemon": "node src/daemon/index.js",
     "sleep": "node src/sleep/index.js",
-    "test": "node --test test/daemon/daemon.test.js test/cli/cli.test.js test/sleep/sleep.test.js test/integration/pipeline.test.js",
-    "explorer": "node explorer/server.js",
-    "graph:build": "node src/graph/cli.js build vault"
+    "test": "node --test test/daemon/daemon.test.js test/cli/cli.test.js test/sleep/sleep.test.js test/integration/pipeline.test.js"
   }
 }
