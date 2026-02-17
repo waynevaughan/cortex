@@ -1,164 +1,133 @@
 /**
- * Integration tests: Observer → Staging → Promotion → Graph rebuild pipeline.
+ * Integration tests: CLI write → Daemon process → Entry in correct partition.
+ * Tests the full v0.3.1 pipeline without the deleted observer.
  */
 
 import { describe, it, before, after } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtemp, rm, mkdir, writeFile, readFile, readdir } from 'node:fs/promises';
+import { mkdtemp, rm, mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
+import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 
-import { formatObservation, writeToStaging } from '../../src/observer/staging.js';
-import { parseFrontmatter, build, rebuild, buildIncremental } from '../../src/graph/builder.js';
-import { resolveAlias, nodeId, normalizeId } from '../../src/graph/entities.js';
+// Daemon modules
+import { validate } from '../../src/daemon/validate.js';
+import { score } from '../../src/daemon/score.js';
+import { contentHash, checkDuplicate } from '../../src/daemon/dedup.js';
+import { getCategory, getDestination, VALID_TYPES } from '../../src/daemon/taxonomy.js';
+import { buildEntry } from '../../src/daemon/frontmatter.js';
 
-describe('staging file format compatibility', () => {
-  it('graph builder can parse observation staging files', () => {
-    const obs = {
-      type: 'preference',
-      confidence: 0.85,
-      importance: 0.70,
-      title: 'Wayne prefers simple solutions',
-      body: 'Wayne consistently asks for the simplest approach.',
-      entities: [
-        { name: 'Wayne', type: 'person' },
-        { name: 'cortex', type: 'project' },
-      ],
-    };
+// Sleep modules
+import { effectiveImportance } from '../../src/sleep/decay.js';
+import { tokenize, jaccardSimilarity } from '../../src/sleep/dedup.js';
 
-    const content = formatObservation(obs, 'test-session');
-    const { frontmatter, body } = parseFrontmatter(content);
-
-    assert.equal(frontmatter.type, 'preference');
-    assert.equal(frontmatter.confidence, '0.85');
-    assert.equal(frontmatter.importance, '0.70');
-    assert.equal(frontmatter.title, 'Wayne prefers simple solutions');
-    assert.ok(body.includes('Wayne consistently asks'));
-
-    // Entities should be parsed as array of objects
-    assert.ok(Array.isArray(frontmatter.entities), 'entities should be an array');
-    assert.equal(frontmatter.entities.length, 2);
-    assert.equal(frontmatter.entities[0].name, 'wayne-vaughan'); // canonicalized
-    assert.equal(frontmatter.entities[0].type, 'person');
-    assert.equal(frontmatter.entities[1].name, 'cortex');
-    assert.equal(frontmatter.entities[1].type, 'project');
-  });
-});
-
-describe('entity canonicalization consistency', () => {
-  it('observer entities resolve to same IDs as graph entities', () => {
-    // The observer staging now uses resolveAlias from graph/entities.js
-    const testCases = [
-      { raw: 'Wayne', expectedCanon: 'wayne-vaughan' },
-      { raw: 'wayne vaughan', expectedCanon: 'wayne-vaughan' },
-      { raw: '@waynevaughan', expectedCanon: 'wayne-vaughan' },
-      { raw: 'Cole', expectedCanon: 'cole' },
-      { raw: 'SomeNewPerson', expectedCanon: 'somenewperson' },
-    ];
-
-    for (const { raw, expectedCanon } of testCases) {
-      const canon = resolveAlias(raw);
-      assert.equal(canon, expectedCanon, `resolveAlias("${raw}") should be "${expectedCanon}"`);
-      // nodeId should produce consistent typed IDs
-      assert.equal(nodeId('person', canon), `person:${expectedCanon}`);
-    }
-  });
-});
-
-describe('full pipeline: staging → vault → graph', () => {
+describe('Full pipeline: write → validate → score → route → write entry', () => {
   let tmpDir;
-  let vaultDir;
-  let stagingDir;
 
   before(async () => {
     tmpDir = await mkdtemp(join(tmpdir(), 'cortex-integration-'));
-    vaultDir = join(tmpDir, 'vault');
-    stagingDir = join(tmpDir, 'staging');
-    await mkdir(join(vaultDir, 'observations'), { recursive: true });
-    await mkdir(stagingDir, { recursive: true });
-
-    // Create a regular vault doc for the graph to parse
-    await writeFile(join(vaultDir, 'readme.md'), `---
-title: "Test Project"
-author: Wayne
-project: cortex
-tags: [test]
----
-
-This is a test document about @Cole.
-`);
+    await mkdir(join(tmpDir, 'mind'), { recursive: true });
+    await mkdir(join(tmpDir, 'vault'), { recursive: true });
+    await mkdir(join(tmpDir, 'queue'), { recursive: true });
   });
 
   after(async () => {
     await rm(tmpDir, { recursive: true, force: true });
   });
 
-  it('stages an observation, simulates memorization, and rebuilds graph with observation node', async () => {
-    // Stage an observation
-    const obs = {
-      type: 'decision',
-      confidence: 0.92,
-      importance: 0.88,
-      title: 'Use ESM for all modules',
-      body: 'Decided to use ESM imports exclusively.',
-      entities: [
-        { name: 'Wayne', type: 'person' },
-        { name: 'cortex', type: 'project' },
-      ],
+  it('processes a preference observation end-to-end', () => {
+    const entry = {
+      timestamp: new Date().toISOString(),
+      bucket: 'explicit',
+      type: 'preference',
+      body: 'Wayne prefers autonomous execution over step-by-step approval.',
+      attribution: 'Wayne',
+      session_id: '00000000-0000-0000-0000-000000000001',
+      confidence: 0.95,
+      importance: 0.8,
     };
 
-    const stagedPath = await writeToStaging(obs, stagingDir, 'test-session');
-    assert.ok(stagedPath.endsWith('.md'));
+    // Validate
+    const v = validate(entry);
+    assert.ok(v.valid, `Validation failed: ${v.detail}`);
 
-    // Simulate memorization: copy staging file to vault/observations/
-    const stagedContent = await readFile(stagedPath, 'utf8');
-    const filename = stagedPath.split('/').pop();
-    const destPath = join(vaultDir, 'observations', filename);
-    await writeFile(destPath, stagedContent);
+    // Score
+    const s = score(entry, null);
+    assert.ok(s.memorize, `Below threshold: ${s.reason}`);
+    assert.equal(entry.confidence, 0.95);
+    assert.equal(entry.importance, 0.8);
 
-    // Full build — should include both the doc and the observation
-    const graph = await build([vaultDir]);
+    // Route
+    const cat = getCategory('preference');
+    assert.equal(cat, 'concept');
+    const dest = getDestination('preference');
+    assert.equal(dest, 'mind');
 
-    // Verify regular document node exists
-    const docNodes = graph.nodes.filter(n => n.type === 'document');
-    assert.ok(docNodes.length >= 1, 'Should have at least 1 document node');
+    // Build entry
+    const { content, id, filename } = buildEntry(entry);
+    assert.ok(content.includes('type: preference'));
+    assert.ok(content.includes('category: concept'));
+    assert.ok(content.includes('# ---'));
+    assert.ok(content.includes('Wayne prefers autonomous'));
+    assert.ok(filename.endsWith('.md'));
 
-    // Verify observation node exists
-    const obsNodes = graph.nodes.filter(n => n.type === 'observation');
-    assert.equal(obsNodes.length, 1, 'Should have exactly 1 observation node');
-    assert.equal(obsNodes[0].label, 'Use ESM for all modules');
-    assert.ok(obsNodes[0].id.startsWith('obs:'), `Obs ID should start with obs:, got ${obsNodes[0].id}`);
-    assert.equal(obsNodes[0].confidence, 0.92);
-    assert.equal(obsNodes[0].importance, 0.88);
-    assert.equal(obsNodes[0].obsType, 'decision');
+    // Write to correct location
+    const typeDir = join(tmpDir, dest, entry.type);
+    mkdirSync(typeDir, { recursive: true });
+    writeFileSync(join(typeDir, filename), content);
 
-    // Verify entity edges connect to observation
-    const obsEdges = graph.edges.filter(
-      e => e.target === obsNodes[0].id || e.source === obsNodes[0].id
-    );
-    assert.ok(obsEdges.length >= 1, 'Observation should have entity edges');
+    // Verify file exists
+    assert.ok(existsSync(join(typeDir, filename)));
+    const written = readFileSync(join(typeDir, filename), 'utf8');
+    assert.ok(written.includes('Wayne prefers autonomous'));
+  });
 
-    // Verify Wayne entity is shared between doc and observation
-    const wayneNodes = graph.nodes.filter(n => n.id === 'person:wayne-vaughan');
-    assert.equal(wayneNodes.length, 1, 'Wayne should be a single canonical node');
-    assert.ok(wayneNodes[0].mentions >= 2, 'Wayne should be mentioned by both doc and obs');
+  it('routes entity types to vault', () => {
+    const entityTypes = ['fact', 'document', 'person', 'milestone', 'task', 'event', 'resource'];
+    for (const type of entityTypes) {
+      assert.equal(getDestination(type), 'vault', `${type} should route to vault`);
+    }
+  });
 
-    // Incremental rebuild: add another observation
-    const obs2 = {
-      type: 'fact',
-      confidence: 0.75,
-      importance: 0.60,
-      title: 'Node v25 supports ESM natively',
-      body: 'No transpilation needed for ESM on Node v25+.',
-      entities: [],
-    };
-    const staged2 = await writeToStaging(obs2, stagingDir, 'test-session');
-    const staged2Content = await readFile(staged2, 'utf8');
-    const filename2 = staged2.split('/').pop();
-    await writeFile(join(vaultDir, 'observations', filename2), staged2Content);
+  it('routes relation types to vault', () => {
+    assert.equal(getDestination('project'), 'vault');
+    assert.equal(getDestination('dependency'), 'vault');
+  });
 
-    const graph2 = await rebuild([vaultDir], graph);
-    const obsNodes2 = graph2.nodes.filter(n => n.type === 'observation');
-    assert.equal(obsNodes2.length, 2, 'Should have 2 observation nodes after incremental rebuild');
+  it('routes concept types to mind', () => {
+    const conceptTypes = ['idea', 'opinion', 'belief', 'preference', 'lesson', 'decision',
+      'commitment', 'goal_short', 'goal_long', 'aspiration', 'constraint'];
+    for (const type of conceptTypes) {
+      assert.equal(getDestination(type), 'mind', `${type} should route to mind`);
+    }
+  });
+
+  it('dedup detects identical content', () => {
+    const body1 = 'Wayne prefers honest feedback over sugar-coated responses.';
+    const body2 = 'Wayne prefers honest feedback over sugar-coated responses.';
+    assert.equal(contentHash(body1), contentHash(body2));
+  });
+
+  it('dedup distinguishes different content', () => {
+    const body1 = 'Wayne prefers honest feedback.';
+    const body2 = 'Cole prefers structured approaches.';
+    assert.notEqual(contentHash(body1), contentHash(body2));
+  });
+
+  it('sleep decay reduces importance over time', () => {
+    const imp = effectiveImportance(0.8, 0.01, 30);
+    assert.ok(imp < 0.8, 'Should decay after 30 days');
+    assert.ok(imp > 0.5, 'Should not decay too much in 30 days at rate 0.01');
+  });
+
+  it('sleep dedup identifies similar entries', () => {
+    const a = 'Wayne prefers honest direct feedback over diplomatically softened answers';
+    const b = 'Wayne prefers honest feedback over softened diplomatic responses';
+    const sim = jaccardSimilarity(new Set(tokenize(a)), new Set(tokenize(b)));
+    assert.ok(sim > 0.5, `Should show meaningful similarity: ${sim}`);
+  });
+
+  it('covers all 20 taxonomy types', () => {
+    assert.equal(VALID_TYPES.size, 20);
   });
 });
