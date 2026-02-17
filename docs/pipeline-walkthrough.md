@@ -14,7 +14,7 @@ Read `docs/vocabulary.md` first for terminology. This document uses those terms 
 
 ## Example 1: Agent Observes a Decision During Conversation
 
-**Scenario:** During a conversation, Wayne says: *"Let's use local git only — no remote push in the daemon."* The agent recognizes this as a decision.
+**Scenario:** During a conversation, the owner says: *"Let's use local git only — no remote push in the daemon."* The agent recognizes this as a decision.
 
 ### Step 1: Agent Writes to Buffer
 
@@ -38,10 +38,10 @@ The agent determines:
   "type": "decision",
   "body": "Use local git only — no remote push in daemon. Reduces complexity and eliminates network failure mode.",
   "entities": [
-    {"name": "Wayne", "type": "person"},
+    {"name": "owner", "type": "person"},
     {"name": "Cortex", "type": "project"}
   ],
-  "attribution": "Wayne",
+  "attribution": "owner",
   "session_id": "022a598a-7ca8-4ccf-80bb-f1919386421e",
   "confidence": 0.95,
   "importance": 0.9,
@@ -110,10 +110,10 @@ The daemon uses Node.js `fs.watch` on `observer/observations.jsonl` with a 30-se
   type: 'decision',
   body: 'Use local git only — no remote push in daemon. Reduces complexity and eliminates network failure mode.',
   entities: [
-    { name: 'Wayne', type: 'person' },
+    { name: 'owner', type: 'person' },
     { name: 'Cortex', type: 'project' }
   ],
-  attribution: 'Wayne',
+  attribution: 'owner',
   session_id: '022a598a-7ca8-4ccf-80bb-f1919386421e',
   confidence: 0.95,
   importance: 0.9,
@@ -355,12 +355,12 @@ But wait...
 - Requires routing rule: `if type == "decision" → vault (data)`
 
 **Interpretation 3: Split observation**
-- Some decisions are behavioral ("Wayne prefers X") → mind
+- Some decisions are behavioral ("the owner prefers X") → mind
 - Other decisions are architectural/project ("Use SQLite") → vault
 - Requires agent or daemon to distinguish intent
 - How? Agent could write two observations, or add a `scope` field?
 
-**Wayne's vault.md guidance (from the spec):**
+**The owner's vault.md guidance (from the spec):**
 > "Decisions with rationale that others need to understand" belong in vault.
 
 **D17 guidance:**
@@ -442,11 +442,11 @@ source_hash: e7f4a2b9c1d8f3e6a5b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0
 
 title: "Use local git only — no remote push in daemon. Reduces complexity and…"
 bucket: explicit
-attribution: Wayne
+attribution: owner
 confidence: 0.95
 importance: 1.0
 entities:
-  - name: Wayne
+  - name: owner
     type: person
   - name: Cortex
     type: project
@@ -518,13 +518,13 @@ But D15 says concepts route to mind, and decisions are architectural → should 
 
 ```bash
 git add vault/decisions/2026-02-16-e7f4a2b9.md
-git commit -m "observe: local git only decision (Wayne)"
+git commit -m "observe: local git only decision (owner)"
 ```
 
 **Commit message format (proposed):**
 - Prefix: `observe:` (distinguishes from hand-written content)
 - Summary: Key phrase from observation body
-- Attribution in parentheses: `(Wayne)`
+- Attribution in parentheses: `(owner)`
 
 **Exact commit:**
 ```
@@ -532,7 +532,7 @@ commit a7b3c9d5e1f7a8b2c4d6e8f0a2b4c6d8e0f2a4b6
 Author: cortex-daemon <daemon@cortex.local>
 Date:   Sun Feb 16 15:23:15 2026 -0600
 
-    observe: local git only decision (Wayne)
+    observe: local git only decision (owner)
 ```
 
 **What can go wrong:**
@@ -541,7 +541,7 @@ Date:   Sun Feb 16 15:23:15 2026 -0600
 
 #### 9d. Push to Remote (Per Decision: Local Only)
 
-**Per the decision Wayne just made:** *"Use local git only — no remote push in daemon"*
+**Per the decision the owner just made:** *"Use local git only — no remote push in daemon"*
 
 **Therefore:** Daemon does NOT push. Commit remains local.
 
@@ -697,7 +697,7 @@ Daemon is now ready to process next observation.
 
 **Scenario:** A developer runs:
 ```bash
-cortex write --type project --body "SigmaRead - AI-powered reading companion for teachers"
+cortex write --type project --body "ExampleApp - AI-powered reading companion for teachers"
 ```
 
 ### Differences from Example 1 (Observe Path)
@@ -719,12 +719,12 @@ cortex write --type project --body "SigmaRead - AI-powered reading companion for
 **Time:** <10ms
 
 ```bash
-cortex write --type project --body "SigmaRead - AI-powered reading companion for teachers"
+cortex write --type project --body "ExampleApp - AI-powered reading companion for teachers"
 ```
 
 **Parsed:**
 - `type`: `"project"`
-- `body`: `"SigmaRead - AI-powered reading companion for teachers"`
+- `body`: `"ExampleApp - AI-powered reading companion for teachers"`
 
 **CLI generates missing fields:**
 - `timestamp`: Current time (ISO-8601)
@@ -750,7 +750,7 @@ CLI constructs JSONL entry:
   "timestamp": "2026-02-16T15:30:00.000Z",
   "bucket": "explicit",
   "type": "project",
-  "body": "SigmaRead - AI-powered reading companion for teachers",
+  "body": "ExampleApp - AI-powered reading companion for teachers",
   "attribution": "system",
   "session_id": "cli"
 }
@@ -797,7 +797,7 @@ source_hash: a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4
 
 # ---
 
-title: "SigmaRead - AI-powered reading companion for teachers"
+title: "ExampleApp - AI-powered reading companion for teachers"
 bucket: explicit
 attribution: system
 confidence: 0.9
@@ -805,14 +805,14 @@ importance: 0.5
 session_id: "cli"
 ---
 
-SigmaRead - AI-powered reading companion for teachers
+ExampleApp - AI-powered reading companion for teachers
 ```
 
 ---
 
 ## Example 3: Duplicate Observation (Reinforcement)
 
-**Scenario:** The agent observes: *"Wayne prefers honest feedback"* but this already exists in the mind.
+**Scenario:** The agent observes: *"The owner prefers honest feedback"* but this already exists in the mind.
 
 ### Existing Observation
 
@@ -828,7 +828,7 @@ source_hash: c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0
 
 # ---
 
-title: "Wayne prefers honest feedback"
+title: "The owner prefers honest feedback"
 bucket: ambient
 attribution: Agent
 confidence: 0.8
@@ -836,7 +836,7 @@ importance: 0.8
 last_reinforced: 2026-01-15T10:23:00.000Z
 ---
 
-Wayne prefers honest, direct feedback over diplomatically softened answers.
+The owner prefers honest, direct feedback over diplomatically softened answers.
 ```
 
 ### Step-by-Step for Reinforcement Path
@@ -847,7 +847,7 @@ Agent writes new observation to buffer. Daemon reads, validates, scores.
 
 **New observation body:**
 ```
-"Wayne prefers honest feedback over sugar-coated responses"
+"The owner prefers honest feedback over sugar-coated responses"
 ```
 
 #### Step 6: Deduplication (Hash Match)
@@ -858,9 +858,9 @@ Agent writes new observation to buffer. Daemon reads, validates, scores.
 Daemon computes content hash:
 
 **Normalization:**
-1. Body: `"Wayne prefers honest feedback over sugar-coated responses"`
-2. Lowercase: `"wayne prefers honest feedback over sugar-coated responses"`
-3. Collapse whitespace: `"wayne prefers honest feedback over sugar-coated responses"`
+1. Body: `"The owner prefers honest feedback over sugar-coated responses"`
+2. Lowercase: `"the owner prefers honest feedback over sugar-coated responses"`
+3. Collapse whitespace: `"the owner prefers honest feedback over sugar-coated responses"`
 4. SHA-256: `c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0`
 
 **Hash lookup:** Search vault for matching `source_hash`
@@ -927,7 +927,7 @@ last_reinforced: 2026-02-16T15:35:00Z
 
 5. Commits change:
 ```bash
-git commit -m "reinforce: Wayne prefers honest feedback (refreshed)"
+git commit -m "reinforce: owner prefers honest feedback (refreshed)"
 ```
 
 6. Clears processed reinforcement from state file
