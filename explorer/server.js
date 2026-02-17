@@ -251,6 +251,19 @@ const HTML = `<!DOCTYPE html>
 
   .empty { text-align: center; padding: 48px; color: var(--dim); }
   .last-updated { font-size: 12px; color: var(--dim); }
+
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 100; display: none; align-items: center; justify-content: center; }
+  .modal-overlay.visible { display: flex; }
+  .modal { background: var(--card); border: 1px solid var(--border); border-radius: 12px; max-width: 700px; width: 90%; max-height: 80vh; overflow-y: auto; padding: 24px; position: relative; animation: modalIn 0.2s ease; }
+  @keyframes modalIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+  .modal-close { position: absolute; top: 12px; right: 16px; background: none; border: none; color: var(--dim); font-size: 20px; cursor: pointer; padding: 4px 8px; border-radius: 4px; }
+  .modal-close:hover { color: var(--text); background: rgba(255,255,255,0.05); }
+  .modal-type { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; padding: 2px 8px; border-radius: 4px; display: inline-block; margin-bottom: 12px; }
+  .modal-body { font-size: 15px; line-height: 1.7; color: var(--text); white-space: pre-wrap; margin-bottom: 16px; }
+  .modal-meta { display: flex; flex-wrap: wrap; gap: 12px; font-size: 12px; color: var(--dim); padding-top: 12px; border-top: 1px solid var(--border); }
+  .modal-field { display: flex; gap: 4px; }
+  .modal-field-label { color: var(--dim); }
+  .modal-field-value { color: var(--muted); }
 </style>
 </head>
 <body>
@@ -280,6 +293,15 @@ const HTML = `<!DOCTYPE html>
   </div>
 
   <div class="entries" id="entries"></div>
+</div>
+
+<div class="modal-overlay" id="modal-overlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div id="modal-type" class="modal-type"></div>
+    <div id="modal-body" class="modal-body"></div>
+    <div id="modal-meta" class="modal-meta"></div>
+  </div>
 </div>
 
 <script>
@@ -350,7 +372,7 @@ function render(newIds) {
     const title = e.title || e.body?.split('\\n')[0] || 'Untitled';
     const body = e.body || '';
     const isNew = newIds && !prevIds.has(e.id) && prevIds.size > 0;
-    return '<div class="entry' + (isNew ? ' entry-new' : '') + '" onclick="this.querySelector(\\'.entry-body\\').classList.toggle(\\'expanded\\')">' +
+    return '<div class="entry' + (isNew ? ' entry-new' : '') + '" onclick="showModal(allEntries.find(x=>x.id===\\'' + escHtml(e.id||'') + '\\'))">' +
       '<div class="entry-header">' +
         '<span class="entry-type ' + typeClass(e.type) + '">' + e.type + '</span>' +
         '<span class="entry-partition">' + e.partition + '</span>' +
@@ -370,6 +392,35 @@ function render(newIds) {
 function escHtml(s) {
   return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
+
+function showModal(e) {
+  if (!e) return;
+  const tc = typeClass(e.type);
+  document.getElementById('modal-type').className = 'modal-type ' + tc;
+  document.getElementById('modal-type').textContent = e.type + ' · ' + e.partition;
+  document.getElementById('modal-body').textContent = e.body || '';
+  document.getElementById('modal-meta').innerHTML = [
+    e.id ? field('id', e.id) : '',
+    e.attribution ? field('by', e.attribution) : '',
+    e.importance ? field('importance', e.importance) : '',
+    e.confidence ? field('confidence', e.confidence) : '',
+    e.created ? field('created', e.created) : '',
+    e.path ? field('path', e.path) : '',
+    e.session_id ? field('session', e.session_id) : '',
+    e.source_hash ? field('hash', e.source_hash.slice(0,12) + '…') : '',
+  ].filter(Boolean).join('');
+  document.getElementById('modal-overlay').classList.add('visible');
+}
+
+function field(label, value) {
+  return '<div class="modal-field"><span class="modal-field-label">' + escHtml(label) + ':</span><span class="modal-field-value">' + escHtml(String(value)) + '</span></div>';
+}
+
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('visible');
+}
+
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
 
 document.getElementById('search').addEventListener('input', () => render());
 document.getElementById('partition-filter').addEventListener('change', () => render());
@@ -419,6 +470,22 @@ const GRAPH_HTML = `<!DOCTYPE html>
   .tooltip-body { color: var(--muted); line-height: 1.5; }
   .tooltip-meta { color: var(--dim); font-size: 11px; margin-top: 6px; }
   .stats-bar { position: fixed; bottom: 16px; left: 16px; font-size: 12px; color: var(--dim); z-index: 10; }
+
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 100; display: none; align-items: center; justify-content: center; }
+  .modal-overlay.visible { display: flex; }
+  .modal { background: #111827; border: 1px solid var(--border); border-radius: 12px; max-width: 700px; width: 90%; max-height: 80vh; overflow-y: auto; padding: 24px; position: relative; animation: modalIn 0.2s ease; }
+  @keyframes modalIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+  .modal-close { position: absolute; top: 12px; right: 16px; background: none; border: none; color: var(--dim); font-size: 20px; cursor: pointer; padding: 4px 8px; border-radius: 4px; }
+  .modal-close:hover { color: #e2e8f0; background: rgba(255,255,255,0.05); }
+  .modal-type { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; padding: 2px 8px; border-radius: 4px; display: inline-block; margin-bottom: 12px; }
+  .modal-type.type-concept { background: rgba(129,140,248,0.15); color: var(--concept); }
+  .modal-type.type-entity { background: rgba(74,222,128,0.15); color: var(--entity); }
+  .modal-type.type-relation { background: rgba(251,191,36,0.15); color: var(--relation); }
+  .modal-body { font-size: 15px; line-height: 1.7; color: #e2e8f0; white-space: pre-wrap; margin-bottom: 16px; }
+  .modal-meta { display: flex; flex-wrap: wrap; gap: 12px; font-size: 12px; color: var(--dim); padding-top: 12px; border-top: 1px solid var(--border); }
+  .modal-field { display: flex; gap: 4px; }
+  .modal-field-label { color: var(--dim); }
+  .modal-field-value { color: #94a3b8; }
 </style>
 </head>
 <body>
@@ -442,6 +509,15 @@ const GRAPH_HTML = `<!DOCTYPE html>
 </div>
 <div class="stats-bar" id="stats-bar"></div>
 <canvas id="canvas"></canvas>
+
+<div class="modal-overlay" id="modal-overlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div id="modal-type" class="modal-type"></div>
+    <div id="modal-body" class="modal-body"></div>
+    <div id="modal-meta" class="modal-meta"></div>
+  </div>
+</div>
 
 <script>
 const canvas = document.getElementById('canvas');
@@ -648,7 +724,9 @@ canvas.addEventListener('mousemove', (e) => {
   }
 });
 
+let dragMoved = false;
 canvas.addEventListener('mousedown', (e) => {
+  dragMoved = false;
   const n = getNodeAt(e.clientX, e.clientY);
   if (n) {
     dragging = n;
@@ -660,7 +738,13 @@ canvas.addEventListener('mousedown', (e) => {
   }
 });
 
-canvas.addEventListener('mouseup', () => {
+canvas.addEventListener('mousemove', () => { dragMoved = true; });
+
+canvas.addEventListener('mouseup', (e) => {
+  if (dragging && !dragMoved) {
+    // Click without drag — open modal
+    openNodeModal(dragging);
+  }
   dragging = null;
   isPanning = false;
 });
@@ -679,6 +763,50 @@ function loop() {
   draw();
   requestAnimationFrame(loop);
 }
+
+async function openNodeModal(n) {
+  if (!n || !n.id) return;
+  // Person refs don't have full entries
+  if (n.type === 'person_ref') {
+    document.getElementById('modal-type').className = 'modal-type type-entity';
+    document.getElementById('modal-type').textContent = 'person reference';
+    document.getElementById('modal-body').textContent = n.label;
+    document.getElementById('modal-meta').innerHTML = '<div class="modal-field"><span class="modal-field-label">id:</span><span class="modal-field-value">' + esc(n.id) + '</span></div>';
+    document.getElementById('modal-overlay').classList.add('visible');
+    return;
+  }
+  try {
+    const entry = await fetch('/api/entry?id=' + encodeURIComponent(n.id)).then(r => r.ok ? r.json() : null);
+    if (!entry) return;
+    const catClass = n.category === 'concept' ? 'type-concept' : n.category === 'entity' ? 'type-entity' : 'type-relation';
+    document.getElementById('modal-type').className = 'modal-type ' + catClass;
+    document.getElementById('modal-type').textContent = (entry.type || n.type) + ' · ' + (entry.partition || n.partition);
+    document.getElementById('modal-body').textContent = entry.body || n.label;
+    document.getElementById('modal-meta').innerHTML = [
+      entry.id ? fld('id', entry.id) : '',
+      entry.attribution ? fld('by', entry.attribution) : '',
+      entry.importance ? fld('importance', entry.importance) : '',
+      entry.confidence ? fld('confidence', entry.confidence) : '',
+      entry.created ? fld('created', entry.created) : '',
+      entry.path ? fld('path', entry.path) : '',
+    ].filter(Boolean).join('');
+    document.getElementById('modal-overlay').classList.add('visible');
+  } catch(e) { console.error(e); }
+}
+
+function fld(label, value) {
+  return '<div class="modal-field"><span class="modal-field-label">' + esc(label) + ':</span><span class="modal-field-value">' + esc(String(value)) + '</span></div>';
+}
+
+function esc(s) {
+  return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('visible');
+}
+
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
 
 loadGraph().then(loop);
 setInterval(loadGraph, 15000);
