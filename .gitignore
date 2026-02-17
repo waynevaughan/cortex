@@ -2,6 +2,8 @@ node_modules/
 *.db
 .DS_Store
 .vercel
+vercel.json
+experiments/
 research/
 graph.json
 *.log
