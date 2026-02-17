@@ -20,3 +20,4 @@ docs/buffer-openclaw.md
 tools/com.cortex.daemon.plist
 tools/com.cortex.sleep.plist
 mind/
+queue/
