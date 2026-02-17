@@ -45,7 +45,7 @@ Like the brain's sensory buffer, observations at this stage are **temporary by d
 
 ### Stage 2: Classification (Working Memory)
 
-The agent classifies the observation into one of three **categories** and 21 **types**:
+The agent classifies the observation into one of three **categories** and 20 **types**:
 
 | Category | What it represents | Types |
 |---|---|---|

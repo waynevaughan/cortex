@@ -26,7 +26,7 @@ Canonical terms for the Cortex system. Use these consistently across all specs, 
 |---|---|
 | **Observation** | Ephemeral input from an agent during conversation. Written to the queue by the agent during conversation. The agent decides what to observe — there is no automated extraction. A staging state, not a type. Consumed by the daemon and transformed into an entry. |
 | **Entry** | A document in the Cortex (mind or vault). Has Cortex frontmatter + body. Created exclusively through the daemon pipeline. |
-| **Type** | The specific kind of knowledge (fact, decision, preference, person, project, etc.). 21 defaults, extensible via taxonomy config. |
+| **Type** | The specific kind of knowledge (fact, decision, preference, person, project, etc.). 20 defaults, extensible via taxonomy config. |
 | **Category** | The grouping above type. Three categories: concept (ideas), entity (things), relation (connections). Every type belongs to one category. |
 | **Taxonomy** | The full type→category mapping. Ships with defaults, extensible via `taxonomy.yml`. Add-only. |
 

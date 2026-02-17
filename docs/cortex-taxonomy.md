@@ -3,12 +3,12 @@
 This document defines the complete type taxonomy for the Cortex knowledge graph. It contains:
 
 1. **The knowledge graph split** — The agent's mind vs. the human's computer
-2. **The full type taxonomy** — 21 types across 3 categories (concept/entity/relation), each with rigorous first-principles definitions, distinguishing criteria, and examples
+2. **The full type taxonomy** — 20 types across 3 categories (concept/entity/relation), each with rigorous first-principles definitions, distinguishing criteria, and examples
 3. **Ontology implications** — These observation types are also the node types in the knowledge graph
 
 **Origin:** Built iteratively through dialogue between Wayne and Cole. Started from analysis of early observation data and evolved into first-principles epistemology. The taxonomy defines what Cortex knows and how it's organized.
 
-**How it's used:** The agent applies this taxonomy at write time via the `cortex_observe` skill. When the agent identifies an observation during conversation, it classifies it into one of the 21 types below before writing to `observer/observations.jsonl`. The daemon validates the type against the default taxonomy plus any custom types defined in `observer/taxonomy.yml`. `observation` is a staging state for unclassified input, not a final type — it must resolve to a typed category or be pruned.
+**How it's used:** The agent applies this taxonomy at write time via the `cortex_observe` skill. When the agent identifies an observation during conversation, it classifies it into one of the 20 types below before writing to `observer/observations.jsonl`. The daemon validates the type against the default taxonomy plus any custom types defined in `observer/taxonomy.yml`. `observation` is a staging state for unclassified input, not a final type — it must resolve to a typed category or be pruned.
 
 **Applies to:** v0.3.0 (agent-as-extractor architecture)
 
@@ -52,7 +52,7 @@ The same information can live in both. "Cortex uses SQLite" might be in the agen
 
 - **Human-facing knowledge** is retrieved *explicitly* — searched when doing work, queried by tools, rendered for humans through familiar interfaces. The format needs to be human-readable. The quality bar is "is this accurate, current, and organized so a human can find it?"
 
-The 21 observation types serve as a routing guide. Concept types (idea, opinion, belief, preference, lesson, decision, commitment, goal_short, goal_long, aspiration, constraint) route to the **Mind** — they shape how the agent thinks and operates. Entity types (fact, document, person, milestone, task, event, resource) and Relation types (project, dependency) route to the **Vault** and may appear in both.
+The 20 observation types serve as a routing guide. Concept types (idea, opinion, belief, preference, lesson, decision, commitment, goal_short, goal_long, aspiration, constraint) route to the **Mind** — they shape how the agent thinks and operates. Entity types (fact, document, person, milestone, task, event, resource) and Relation types (project, dependency) route to the **Vault** and may appear in both.
 
 **Key insight:** A single observation can produce both. "We chose Postgres over MongoDB because Wayne values simplicity and local-first" contains agent knowledge (Wayne values simplicity — shapes future decisions) and human-facing knowledge (the project uses Postgres — belongs in the architecture doc). One extraction, two destinations.
 
@@ -66,7 +66,7 @@ The 21 observation types serve as a routing guide. Concept types (idea, opinion,
 
 Observation types are organized into three categories:
 
-**Concept (12 types)** — ideas the agent holds. These are products of intelligent entities and describe how they model reality, form judgments, hold convictions, want things, learn from experience, commit to choices, and direct toward future states. Types: idea, opinion, belief, preference, lesson, decision, commitment, goal_short, goal_long, aspiration, constraint.
+**Concept (11 types)** — ideas the agent holds. These are products of intelligent entities and describe how they model reality, form judgments, hold convictions, want things, learn from experience, commit to choices, and direct toward future states. Types: idea, opinion, belief, preference, lesson, decision, commitment, goal_short, goal_long, aspiration, constraint.
 
 **Entity (7 types)** — things in the world. These are concrete objects, resources, and occurrences that can be tracked and managed. Types: fact, document, person, milestone, task, event, resource.
 
