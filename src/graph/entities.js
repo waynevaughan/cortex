@@ -11,9 +11,9 @@
  * @type {Record<string, string>}
  */
 const KNOWN_ALIASES = {
-  'wayne': 'wayne-vaughan',
-  'wayne vaughan': 'wayne-vaughan',
-  '@waynevaughan': 'wayne-vaughan',
+  'owner': 'user-alpha',
+  'user alpha': 'user-alpha',
+  '@useralpha': 'user-alpha',
   'cole': 'cole',
   '@cole': 'cole',
 };
