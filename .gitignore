@@ -10,3 +10,4 @@ graph.json
 observer/staging/
 observer/state.json
 observer/*.pid
+spec/
