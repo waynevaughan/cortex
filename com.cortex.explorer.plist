@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.cortex.explorer</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/opt/homebrew/bin/node</string>
+        <string>/Users/cole/.openclaw/workspace/cortex-review/explorer/server.js</string>
+    </array>
+
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>CORTEX_ROOT</key>
+        <string>/Users/cole/.openclaw/workspace/cortex-review</string>
+    </dict>
+
+    <key>RunAtLoad</key>
+    <true/>
+
+    <key>KeepAlive</key>
+    <true/>
+
+    <key>StandardOutPath</key>
+    <string>/Users/cole/.openclaw/workspace/cortex-review/queue/explorer.log</string>
+
+    <key>StandardErrorPath</key>
+    <string>/Users/cole/.openclaw/workspace/cortex-review/queue/explorer.error.log</string>
+
+    <key>WorkingDirectory</key>
+    <string>/Users/cole/.openclaw/workspace/cortex-review</string>
+</dict>
+</plist>
